@@ -102,7 +102,7 @@ class MainTest {
         math.setGrade("Uml lab", "Penny", 3)
         math.setGrade("Uml lab", "Howard", 5)
         math.setToplist()
-        assertEquals(0.22, math.getTask("Penny"))
+        assertEquals(0.22, math.getRankByName("Penny"))
         assertEquals(0.2, math.getRankByName("Howard"))
     }
 
@@ -114,8 +114,8 @@ class MainTest {
         math.setGrade("Uml lab", "Howard", 5)
         math.setToplist()
         val topListFromRepo = toplistRepo.all()
-        assertEquals(0.22, topListFromRepo.filter { it.studentName == "Penny" && it.courseName == "Math"})
-        assertEquals(0.2, topListFromRepo.filter { it.studentName == "Howard" && it.courseName == "Math"})
+        assertEquals(0.22, topListFromRepo.filter { it.student.name == "Penny" && it.course.name == "Math"})
+        assertEquals(0.2, topListFromRepo.filter { it.student.name == "Howard" && it.course.name == "Math"})
     }
 
     @Test
