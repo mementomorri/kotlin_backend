@@ -52,7 +52,7 @@ class Course(
     }
 
     fun getRankByName(studentName: String):Rank?{
-        return toplist.firstOrNull { it.student.name == studentName }
+        return toplist.firstOrNull { it.student.name == studentName}
     }
 
     fun getTask(taskName:String): Task? {

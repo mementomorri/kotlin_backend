@@ -5,14 +5,14 @@ import persons
 import repo.Item
 
 class Rank (
-        val studentName: String,
-        val courseName: String,
+        studentName: String,
+        courseName: String,
         override val name: String = "$studentName's rank"
 ):Item{
     val rank
         get() = calculateRank()
     val student = persons[studentName] as Student
-    val course = courses[courseName]
+    val course = courses[courseName] as Course
 
     private fun calculateRank():Double{
         var rankI = 0.0
