@@ -1,0 +1,10 @@
+@startuml
+
+actor Tutor
+
+Tutor -> persons : get person by name
+persons -> course: if person exists \nit can be added
+Tutor -> course : addStudentByName(studentName)
+    course -> students : add(studentName)
+
+@enduml

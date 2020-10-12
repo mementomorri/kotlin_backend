@@ -1,0 +1,13 @@
+@startuml
+
+actor Tutor
+collections Courses
+
+Tutor -> Courses : get course
+Tutor -> course : setGrade(task, person, grade)
+course -> grade : << create >> 
+activate grade
+course -> task : setGrade
+deactivate grade
+
+@enduml

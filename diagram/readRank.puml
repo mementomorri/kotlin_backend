@@ -1,0 +1,11 @@
+@startuml
+
+actor Tutor
+collections Courses
+
+Tutor -> Courses : get course
+Tutor -> course : getRankByName(studentName)
+    course -> toplist : firstOrNull(studentName)
+toplist -> Tutor: rank value as Double
+
+@enduml

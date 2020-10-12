@@ -1,0 +1,13 @@
+@startuml sequenceDiagram
+actor Tutor
+collections TopList
+collections Courses
+
+Tutor -> Courses : get course
+Tutor -> Course : setToplist()
+Course -> Rank : << create >>
+activate Rank
+Course -> Rank: getRank()
+deactivate Rank
+TopList <- Course  : add to toplistRepo 
+@enduml

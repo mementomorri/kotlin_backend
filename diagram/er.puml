@@ -1,0 +1,83 @@
+@startuml
+
+    hide circle
+    skinparam minClassWidth 170
+
+    together {
+        entity CourseStudent
+        entity Course
+    }
+    
+    entity Type {
+        id : Number
+        --
+        name : Text
+        shortName : Text
+    }
+
+    entity Task {
+        id : Number
+        --
+        type_id : Number <FK>
+        course_id : Number <FK>
+        descripton: Text
+        shortName : Text
+        maxValue : Int
+        deadline : Date
+    }
+
+    Task |o--o{ Type
+
+    entity Tutor {
+        id : Number
+        --
+        name: Text
+        post: Text
+    }
+
+    entity Student {
+        id : Number
+        --
+        name: Text
+        group: Text
+    }
+
+    entity Course {
+        name: Text
+        tutors: Tutor[]
+        students: Student[]
+    }
+
+    entity CourseTutor{
+        id : Number
+        --
+        course_id : Number <FK>
+        tutor_id : Number <FK>
+    }
+
+    entity CourseStudent {
+        id : Number
+        --
+        course_id : Number <FK>
+        student_id : Number <FK>
+    }
+
+
+    Course ||--|{ Task
+    Course ||--o{ CourseTutor
+    Tutor ||--o{ CourseTutor
+
+    Course ||--o{ CourseStudent
+    Student ||--o{ CourseStudent
+
+    entity Grade{
+        value : Integer
+        date : Date
+        student_id : Number <FK>
+        task_id : Number <FK>
+    }
+
+    Grade ||--o{ Student
+    Grade ||--o{ Task
+
+@enduml

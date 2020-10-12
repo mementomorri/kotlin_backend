@@ -1,0 +1,26 @@
+@startuml precedentDiagram
+    left to right direction    
+    Person <|-- Tutor   
+    Person <|-- Student
+    Person <|-- Admin
+    rectangle {
+        usecase ("Set grade") as SG
+        usecase ("Read grades") as RG
+        usecase ("Set Course") as SC
+        usecase ("Set Course Person") as SCP
+        usecase ("Set top list") as SetTL
+        usecase ("Get Rank") as GetR
+        'usecase ("Read course") as ReadC
+        Tutor -- ("Set task")
+        Tutor -- SG
+        Tutor - SCP
+        Tutor --- SetTL
+        Student -- RG
+        Admin -- ("Set Person")
+        Admin -- SC
+    }
+    SG --> RG : << extend >>
+    SC --> SCP : << include >>
+    SetTL --> GetR : <<include>>
+   'SC -> ReadC : << extend >>
+@enduml
