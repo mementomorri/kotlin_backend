@@ -3,5 +3,5 @@ import repo.ListRepo
 
 val persons = ListRepo<Person>()
 val courses = ListRepo<Course>()
-val taskTypes = ListRepo<Type>()
-val topListRepo = ListRepo<Rank>()
+//val taskTypes = ListRepo<Type>()
+val toplistRepo = ListRepo<Rank>()

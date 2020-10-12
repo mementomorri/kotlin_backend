@@ -12,10 +12,22 @@ class Task(
 ) : Item {
     val grades = ArrayList<Grade>()
 
-    fun readGrade(studentName: String): Int?{
+    fun getGrade(studentName: String): Int?{
         return grades
                 .filter { it.student.name == studentName }
                 .maxByOrNull { it.value }
                 ?.value ?: 0
+    }
+
+    companion object Factory{
+        fun getType(type: Type):
+                Task{
+            return when(type){
+                Type.LECTURE -> Task("Lecture",Type.LECTURE)
+                Type.LABORATORY -> Task("Laboratory",Type.LABORATORY)
+                Type.TEST -> Task("Test",Type.TEST)
+                Type.PERSONAL_PROJECT -> Task("Personal project",Type.PERSONAL_PROJECT)
+            }
+        }
     }
 }

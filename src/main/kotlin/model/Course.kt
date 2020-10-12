@@ -2,6 +2,7 @@ package model
 
 import persons
 import repo.Item
+import toplistRepo
 import java.time.LocalDate
 
 class Course(
@@ -10,12 +11,21 @@ class Course(
     val tutors = ArrayList<Tutor>()
     val students = ArrayList<Student>()
     val tasks = ArrayList<Task>()
-    val topList = ArrayList<Rank>()
+    val toplist = ArrayList<Rank>()
 
-    fun addTutorByName(name: String) {
-        persons[name]?.let {
-            if (it is Tutor)
-                tutors.add(it)
+    fun setToplist(){
+        this.students.forEach{ student ->
+            val currentRank= Rank(student.name, this.name)
+            this.toplist.add(currentRank)
+            toplistRepo.add(currentRank)
+        }
+    }
+
+    fun printTopList(){
+        println("${this.name} toplist:")
+        val sortedTopList = toplist.sortedBy { it.rank }
+        sortedTopList.forEach { rank ->
+            println(rank.toString())
         }
     }
 
@@ -27,6 +37,7 @@ class Course(
         task.grades += grade
     }
 
+
     fun studentGrades(studentName: String) =
         tasks.map { task ->
             val value = task.grades
@@ -36,23 +47,16 @@ class Course(
             task.name to value
         }.toMap()
 
-    fun getRankByName(studentName: String):Rank?{
-        return topList.firstOrNull { it.student.name == studentName }
+    fun getStudent(studentName: String): Student?{
+        return students.firstOrNull{it.name==studentName}
     }
 
-    fun printTopList(){
-        println("${this.name} toplist:")
-        val sortedTopList = topList.sortedBy { it.rank.second }
-        sortedTopList.forEach { rank ->
-            println(rank.toString())
-        }
+    fun getRankByName(studentName: String):Rank?{
+        return toplist.firstOrNull { it.student.name == studentName }
     }
 
     fun getTask(taskName:String): Task? {
         return tasks.firstOrNull { it.name == taskName }
     }
 
-    fun getStudent(studentName: String): Student?{
-        return students.firstOrNull{it.name==studentName}
-    }
 }

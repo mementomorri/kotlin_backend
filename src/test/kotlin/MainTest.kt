@@ -19,18 +19,17 @@ fun Course.addStudentByName(name: String) {
     }
 }
 
+fun setCourse(courseName: String){
+    if (courses[courseName] == null){
+        courses.add(Course(courseName))
+    }
+}
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MainTest {
 
     @BeforeAll
     fun init() {
-        mapOf(
-            "Lecture" to "Lec",
-            "Laboratory" to "Lab",
-            "Test" to "Tst"
-        ).forEach {
-            taskTypes.add(Type(it.key, it.value))
-        }
         mapOf(
             "Sheldon" to "Professor",
             "Leonard" to "Professor"
@@ -55,9 +54,9 @@ class MainTest {
             addTutorByName("Sheldon")
             addStudentByName("Howard")
             addStudentByName("Penny")
-            tasks.add(Task("Intro", taskTypes["Lecture"]!!))
-            tasks.add(Task("UML", taskTypes["Lecture"]!!))
-            tasks.add(Task("Uml lab", taskTypes["Laboratory"]!!, maxValue = 5))
+            tasks.add(Task("Intro", Type.LECTURE))
+            tasks.add(Task("UML", Type.LECTURE))
+            tasks.add(Task("Uml lab", Type.LABORATORY, maxValue = 5))
         }
     }
 
@@ -97,64 +96,43 @@ class MainTest {
     }
 
     @Test
-    fun setTopListTest(){
+    fun tutorSetToplistTest(){
         val math = courses["Math"] ?: fail()
         math.setGrade("Intro", "Penny", 1)
         math.setGrade("Uml lab", "Penny", 3)
         math.setGrade("Uml lab", "Howard", 5)
-        val sheldon = persons["Sheldon"] as Tutor
-        sheldon.setTopList(math)
-        math.topList.forEach {
-            topListRepo.add(it)
-        }
-//        assertEquals(0.26, math.getRankByName("Penny"))
-//        assertEquals(0.33, math.getRankByName("Howard"))
-        val topListFromRepo = topListRepo.all()
-        assertEquals(0.26, topListFromRepo.filter { it.name == "Penny's rank" })
-        assertEquals(0.33, topListFromRepo.filter { it.name == "Howard's rank" })
+        math.setToplist()
+        assertEquals(0.22, math.getTask("Penny"))
+        assertEquals(0.2, math.getRankByName("Howard"))
     }
 
     @Test
-    fun studentReadGradesTest(){
-        val math = courses["Math"] ?: fail()
-        math.setGrade("Uml lab", "Penny", 3)
-        math.setGrade("Uml lab", "Howard", 5)
-        val penny = persons["Penny"] as Student
-        val howard = persons["Howard"] as Student
-        assertEquals(3, penny.readGradesAtCourse("Math")?.get("Uml lab"))
-        assertEquals(5, howard.readGradesAtCourse("Math")?.get("Uml lab"))
-    }
-
-    @Test
-    fun studentReadRankAtCourseTest(){
+    fun studentOrTutorReadRankTest(){
         val math = courses["Math"] ?: fail()
         math.setGrade("Intro", "Penny", 1)
         math.setGrade("Uml lab", "Penny", 3)
         math.setGrade("Uml lab", "Howard", 5)
-        val sheldon = persons["Sheldon"] as Tutor
-        sheldon.setTopList(math)
-        val penny = persons["Penny"] as Student
-        val howard = persons["Howard"] as Student
-        assertEquals(0.26, penny.readRankAtCourse("Math")?.rank.second)
-        assertEquals(0.33, howard.readRankAtCourse("Math")?.rank.second)
+        math.setToplist()
+        val topListFromRepo = toplistRepo.all()
+        assertEquals(0.22, topListFromRepo.filter { it.studentName == "Penny" && it.courseName == "Math"})
+        assertEquals(0.2, topListFromRepo.filter { it.studentName == "Howard" && it.courseName == "Math"})
     }
 
     @Test
-    fun tutorReadGradesTest(){
+    fun studentOrTutorReadGradesTest(){
         val math = courses["Math"] ?: fail()
         math.setGrade("Uml lab", "Penny", 3)
         math.setGrade("Uml lab", "Howard", 5)
-        val sheldon = persons["Sheldon"] as Tutor
-        assertEquals(3, sheldon.readGrades("Math", "Penny"))
-        assertEquals(5, sheldon.readGrades("Math", "Howard"))
+        assertEquals(3, math.getTask("Uml lab")?.getGrade("Penny"))
+        assertEquals(5, math.getTask("Uml lab")?.getGrade("Howard"))
     }
+
 
     @Test
     fun tutorSetGradeTest(){
         val math = courses["Math"] ?: fail()
-        val sheldon = persons["Sheldon"] as Tutor
-        sheldon.setGrade("Math","Intro","Howard",4)
-        sheldon.setGrade("Math","Uml lab","Howard",3)
+        math.setGrade("Intro","Howard",4)
+        math.setGrade("Uml lab","Howard",3)
         assertEquals(4, math.studentGrades("Howard")["Intro"])
         assertEquals(3, math.studentGrades("Howard")["Uml lab"])
     }
@@ -162,31 +140,33 @@ class MainTest {
     @Test
     fun tutorSetTaskTest(){
         val math = courses["Math"] ?: fail()
-        val sheldon = persons["Sheldon"] as Tutor
-        sheldon.setTask("Math","ORM design", taskTypes["Lecture"]!!)
-        sheldon.setTask("Math","VScode", taskTypes["Lecture"]!!)
-        assertEquals("ORM design", courses["Math"]?.getTask("ORM design")?.name)
-        assertEquals("VScode", courses["Math"]?.getTask("VScode")?.name)
-    }
-
-    @Test
-    fun tutorSetCourseTest(){
-        val sheldon = persons["Sheldon"] as Tutor
-        sheldon.setCourse("Rocket science")
-        sheldon.setCourse("Basic rocket piloting")
-        assertEquals("Rocket science", courses["Rocket science"]?.name)
-        assertEquals("Basic rocket piloting", courses["Basic rocket piloting"]?.name)
+        math.tasks.add(Task.getType(Type.LECTURE))
+        math.tasks.add(Task.getType(Type.LABORATORY))
+        math.tasks.add(Task.getType(Type.TEST))
+        assertEquals("Lecture", math.getTask("Lecture")?.name)
+        assertEquals("Laboratory", math.getTask("Laboratory")?.name)
+        assertEquals("Test", math.getTask("Test")?.name)
+        assertEquals("Personal project", math.getTask("Personal project")?.name)
     }
 
     @Test
     fun tutorAddStudentToCourse(){
         val math = courses["Math"] ?: fail()
-        val sheldon = persons["Sheldon"] as Tutor
-        sheldon.addStudentToCourse("Math","Bob")
-        sheldon.addStudentToCourse("Math","Charlie")
+        persons.add(Student("Bob","Newcomers"))
+        persons.add(Student("Charlie","Newcomers"))
+        math.addStudentByName("Bob")
+        math.addStudentByName("Charlie")
         assertEquals("Bob", math.getStudent("Bob")?.name)
         assertEquals("Charlie", math.getStudent("Charlie")?.name)
     }
 
-
+    @Test
+    fun adminSetCourseTest(){
+        listOf("Rocket science", "Basic rocket piloting", "Space navigation").forEach {
+            setCourse(it)
+        }
+        assertEquals("Rocket science", courses["Rocket science"]?.name)
+        assertEquals("Basic rocket piloting", courses["Basic rocket piloting"]?.name)
+        assertEquals("Space navigation", courses["Space navigation"]?.name)
+    }
 }

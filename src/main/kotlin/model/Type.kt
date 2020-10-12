@@ -1,8 +1,8 @@
 package model
 
-import repo.Item
-
-class Type (
-    override val name: String,
-    val shortname: String
-) : Item
+enum class Type{
+    LECTURE,
+    LABORATORY,
+    TEST,
+    PERSONAL_PROJECT
+}
