@@ -4,10 +4,10 @@ actor Admin
 collections Courses
 
 Admin -> Courses : get course by name
-Courses -> course: if course already exists \nit can't be added
+Courses -> course: if courses[courseName] = null
 activate course
 Admin -> course : addCourse(courseName)
 deactivate course
-course -> Courses: add to array
+course -> Courses: add to ArrayList<Course>
 
 @enduml

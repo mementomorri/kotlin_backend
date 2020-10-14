@@ -3,8 +3,8 @@
 actor Tutor
 
 Tutor -> persons : get person by name
-persons -> course: if person exists \nit can be added
+persons -> course: if person != null
 Tutor -> course : addStudentByName(studentName)
-    course -> students : add(studentName)
+    course -> students : add(studentName) \nto ArrayList<Student>
 
 @enduml

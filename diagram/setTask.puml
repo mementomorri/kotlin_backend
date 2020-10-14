@@ -8,5 +8,5 @@ Tutor -> Course : add(taskName, taskType)
 Course -> Task : << create >>
 activate Task
 deactivate Task
-Task -> Course  : add to array 
+Task -> Course  : add to ArrayList<Task>
 @enduml
