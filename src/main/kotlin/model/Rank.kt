@@ -33,7 +33,7 @@ class Rank (
         }
     }
 
-    override fun  toString(): String {
-        return "${student.name} got ${(rank*100).toInt()}%"
-    }
+//    override fun  toString(): String {
+//        return "${student.name} got ${(rank*100).toInt()}%"
+//    }
 }

@@ -57,6 +57,9 @@ class MainTest {
             tasks.add(Task("Intro", Type.LECTURE))
             tasks.add(Task("UML", Type.LECTURE))
             tasks.add(Task("Uml lab", Type.LABORATORY, maxValue = 5))
+            setGrade("Uml lab", "Howard", 5)
+            setGrade("Uml lab", "Penny", 3)
+            setGrade("Intro", "Penny", 1)
         }
     }
 
@@ -89,40 +92,34 @@ class MainTest {
         val math = courses["Math"] ?: fail()
         math.setGrade("Intro", "Penny", 1)
         math.setGrade("Uml lab", "Penny", 3)
-        math.setGrade("Uml lab", "Penny", 4)
+        math.setGrade("Uml lab", "Penny", 5)
         val grades = math.studentGrades("Penny")
         assertEquals(1, grades["Intro"])
-        assertEquals(4, grades["Uml lab"])
+        assertEquals(5, grades["Uml lab"])
     }
 
     @Test
     fun tutorSetToplistTest(){
         val math = courses["Math"] ?: fail()
-        math.setGrade("Intro", "Penny", 1)
-        math.setGrade("Uml lab", "Penny", 3)
-        math.setGrade("Uml lab", "Howard", 5)
+        math.setGrade("Uml lab", "Howard", 3)
         math.setToplist()
-        assertEquals(0.22, math.getRankByName("Penny"))
-        assertEquals(0.2, math.getRankByName("Howard"))
+        assertEquals(0.3, math.getRankByName("Penny")?.rank)
+        assertEquals(0.4, math.getRankByName("Howard")?.rank)
     }
 
     @Test
     fun studentOrTutorReadRankTest(){
         val math = courses["Math"] ?: fail()
-        math.setGrade("Intro", "Penny", 1)
-        math.setGrade("Uml lab", "Penny", 3)
-        math.setGrade("Uml lab", "Howard", 5)
         math.setToplist()
-        val topListFromRepo = toplistRepo.all()
-        assertEquals(0.22, topListFromRepo.filter { it.student.name == "Penny" && it.course.name == "Math"})
-        assertEquals(0.2, topListFromRepo.filter { it.student.name == "Howard" && it.course.name == "Math"})
+        val howardRank = toplistRepo["Howard's rank"]?: fail()
+        val pennyRank = toplistRepo["Penny's rank"]?: fail()
+        assertEquals(0.2, howardRank.rank)
+        assertEquals(0.22, pennyRank.rank)
     }
 
     @Test
     fun studentOrTutorReadGradesTest(){
         val math = courses["Math"] ?: fail()
-        math.setGrade("Uml lab", "Penny", 3)
-        math.setGrade("Uml lab", "Howard", 5)
         assertEquals(3, math.getTask("Uml lab")?.getGrade("Penny"))
         assertEquals(5, math.getTask("Uml lab")?.getGrade("Howard"))
     }
@@ -131,10 +128,10 @@ class MainTest {
     @Test
     fun tutorSetGradeTest(){
         val math = courses["Math"] ?: fail()
-        math.setGrade("Intro","Howard",4)
-        math.setGrade("Uml lab","Howard",3)
-        assertEquals(4, math.studentGrades("Howard")["Intro"])
-        assertEquals(3, math.studentGrades("Howard")["Uml lab"])
+        math.setGrade("Intro","Howard",1)
+        math.setGrade("Uml lab", "Howard",5)
+        assertEquals(1, math.getTask("Intro")?.getGrade("Howard"))
+        assertEquals(5, math.getTask("Uml lab")?.getGrade("Howard"))
     }
 
     @Test
@@ -146,7 +143,6 @@ class MainTest {
         assertEquals("Lecture", math.getTask("Lecture")?.name)
         assertEquals("Laboratory", math.getTask("Laboratory")?.name)
         assertEquals("Test", math.getTask("Test")?.name)
-        assertEquals("Personal project", math.getTask("Personal project")?.name)
     }
 
     @Test
