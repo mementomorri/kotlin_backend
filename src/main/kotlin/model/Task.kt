@@ -1,33 +1,60 @@
 package model
 
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.`java-time`.date
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import org.jetbrains.exposed.sql.transactions.transaction
 import repo.Item
+import repo.ItemTable
+import students
 import java.time.LocalDate
 
 class Task(
-    override val name: String,
-    val type: Type,
-    val description: String = "",
-    val maxValue: Int = 1,
-    val deadline: LocalDate = LocalDate.now()
+        val name: String,
+        val type_id: Int,
+        val course_id: Int,
+        val description: String = "",
+        val maxValue: Int = 1,
+        val deadline: LocalDate = LocalDate.now(),
+        override var id: Int=-1,
 ) : Item {
-    val grades = ArrayList<Grade>()
 
-    fun getGrade(studentName: String): Int?{
-        return grades
-                .filter { it.student.name == studentName }
-                .maxByOrNull { it.value }
-                ?.value ?: 0
-    }
-
-    companion object Factory{
-        fun getType(type: Type):
-                Task{
-            return when(type){
-                Type.LECTURE -> Task("Lecture",Type.LECTURE)
-                Type.LABORATORY -> Task("Laboratory",Type.LABORATORY)
-                Type.TEST -> Task("Test",Type.TEST)
-                Type.PERSONAL_PROJECT -> Task("Personal project",Type.PERSONAL_PROJECT)
-            }
-        }
+    fun getGrade(studentName: String): Int{
+        val student = students.read().find { it.name == studentName }
+        return transaction {
+            Grades.select {
+                Grades.student_id eq student?.id
+            }.firstOrNull()?.let { Grades.readResult(it) }
+        }?.value ?: 0
     }
 }
+
+class TaskTable : ItemTable<Task>() {
+    val name = varchar("name", 255)
+    val type_id = reference("type_ID", TypeTable)
+    val course_id = reference("course_id", courseTable)
+    val description = varchar("description", 255)
+    val maxValue = integer("maxValue")
+    val deadline = date("deadline")
+    override fun fill(builder: UpdateBuilder<Int>, item: Task) {
+        builder[name] = item.name
+        builder[type_id] = item.type_id
+        builder[course_id] = item.course_id
+        builder[description] = item.description
+        builder[maxValue] = item.maxValue
+        builder[deadline] = item.deadline
+    }
+    override fun readResult(result: ResultRow) =
+            Task(
+                    result[name],
+                    result[type_id].value,
+                    result[course_id].value,
+                    result[description],
+                    result[maxValue],
+                    result[deadline],
+                    result[id].value
+            )
+}
+
+val taskTable= TaskTable()

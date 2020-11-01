@@ -1,5 +1,5 @@
 package repo
 
-interface Item{
-    val name: String
+interface Item {
+    var id: Int
 }

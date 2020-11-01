@@ -46,7 +46,17 @@
         name: Text
         tutors: Tutor[]
         students: Student[]
+        toplist: Rank[]
+
     }
+
+    entity Toplist{
+        id: Number
+        --
+        course_id: Number <FK>
+        student_id: Number <FK>
+    }
+
 
     entity CourseTutor{
         id : Number
@@ -69,6 +79,9 @@
 
     Course ||--o{ CourseStudent
     Student ||--o{ CourseStudent
+
+    Course||--o{ Toplist
+
 
     entity Grade{
         value : Integer
