@@ -13,7 +13,7 @@ class Student (
 
 class StudentTable : ItemTable<Student>() {
     val name = varchar("name", 255)
-    val group = varchar("goroup", 5)
+    val group = varchar("goroup", 70)
     override fun fill(builder: UpdateBuilder<Int>, item: Student) {
         builder[name] = item.name
         builder[group] = item.group

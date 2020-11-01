@@ -22,15 +22,12 @@ class Rank (
 
     private fun getTasks() : Map<Task, Grade> {
         val result = mutableMapOf<Task, Grade>()
-        val tasksList = transaction {
-            taskTable.select { taskTable.course_id eq EntityID(course!!.id, courseTable) }
-                    .mapNotNull { taskTable.readResult(it) }
-        }.toList()
+        val tasksList = course?.getTasks()
         val studentGrades = transaction {
-            Grades.select { Grades.student_id eq EntityID(student!!.id, studentTable) }
-                    .mapNotNull { Grades.readResult(it) }
+            grades.select { grades.student_id eq EntityID(student!!.id, studentTable) }
+                    .mapNotNull { grades.readResult(it) }
         }.toList()
-        tasksList.forEach { task ->
+        tasksList?.forEach { task ->
             studentGrades.forEach { grade ->
                 if (task.id == grade.task_id) {
                     result[task] = grade
@@ -53,10 +50,10 @@ class Rank (
 
     private fun calculateWeight(type_id: Int):Double{
         val type = transaction {
-            TypeTable.select { TypeTable.id eq EntityID(type_id, taskTable) }
+            types.select { types.id eq EntityID(type_id, tasks) }
                     .firstOrNull()
                     ?.let {
-                        TypeTable.readResult(it)
+                        types.readResult(it)
                     }
         }
         if (type != null) {
@@ -79,7 +76,7 @@ class Rank (
     }
 }
 
-class Toplist: ItemTable<Rank>(){
+class ToplistTable: ItemTable<Rank>(){
     val student_id = reference("student_id", studentTable)
     val course_id = reference("course_id", courseTable)
     val rank = double("rank")
@@ -98,4 +95,4 @@ class Toplist: ItemTable<Rank>(){
         )
 }
 
-val toplistTable = Toplist()
+val toplist = ToplistTable()

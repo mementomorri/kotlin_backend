@@ -7,11 +7,11 @@ import repo.ItemTable
 
 class Type(
         val name: String,
-        val shortName: String = String.format("%.4f", name),
+        val shortName: String ,
         override var id: Int=-1
 ): Item
 
-object TypeTable : ItemTable<Type>() {
+class TypeTable : ItemTable<Type>() {
     val name = varchar("name", 50)
     val shortName = varchar("shortName", 20)
     override fun fill(builder: UpdateBuilder<Int>, item: Type) {
@@ -25,3 +25,5 @@ object TypeTable : ItemTable<Type>() {
                     result[id].value
             )
 }
+
+val types = TypeTable()

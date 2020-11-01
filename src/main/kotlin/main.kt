@@ -4,9 +4,8 @@ import repo.RepoDSL
 
 val tutors= RepoDSL(tutorTable)
 val students= RepoDSL(studentTable)
-val tasks= RepoDSL(taskTable)
 val courses= RepoDSL(courseTable)
-val toplist= RepoDSL(toplistTable)
+
 
 object CourseStudent: IntIdTable(){
     val course_id = reference("course_id", courseTable)

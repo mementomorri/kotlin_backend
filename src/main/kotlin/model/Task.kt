@@ -23,16 +23,16 @@ class Task(
     fun getGrade(studentName: String): Int{
         val student = students.read().find { it.name == studentName }
         return transaction {
-            Grades.select {
-                Grades.student_id eq student?.id
-            }.firstOrNull()?.let { Grades.readResult(it) }
+            grades.select {
+                grades.student_id eq student?.id
+            }.firstOrNull()?.let { grades.readResult(it) }
         }?.value ?: 0
     }
 }
 
 class TaskTable : ItemTable<Task>() {
     val name = varchar("name", 255)
-    val type_id = reference("type_ID", TypeTable)
+    val type_id = reference("type_ID", types)
     val course_id = reference("course_id", courseTable)
     val description = varchar("description", 255)
     val maxValue = integer("maxValue")
@@ -57,4 +57,4 @@ class TaskTable : ItemTable<Task>() {
             )
 }
 
-val taskTable= TaskTable()
+val tasks= TaskTable()

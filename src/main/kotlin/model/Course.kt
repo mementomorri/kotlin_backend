@@ -10,8 +10,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import repo.Item
 import repo.ItemTable
 import students
-import tasks
-import toplist
 import tutors
 import java.time.LocalDate
 
@@ -22,41 +20,53 @@ class Course(
 ):Item {
 
     fun setToplist(){
-        var nextID = toplist.read().size
+        var nextID = transaction {
+            toplist.selectAll()
+                    .mapNotNull {
+                        toplist.readResult(it)
+                    }
+        }.size
         students.read().forEach {student ->
             nextID++
             val currentRank = Rank(student.id, this.id, nextID)
-            toplist.create(currentRank)
+            transaction {
+                toplist.insertAndGetIdItem(currentRank).value
+                true
+            }
         }
     }
 
     fun setGrade(taskName: String, studentName: String, value: Int, date: LocalDate = LocalDate.now()) {
-        val task = tasks.read().find { it.name == taskName } ?: return
+        val task = this.getTasks().find { it.name == taskName } ?: return
         val student = students.read().find { it.name == studentName } ?: return
         if (value !in 0..task.maxValue) return
         val currentGrade = transaction {
-            Grades.selectAll().mapNotNull{Grades.readResult(it)}
-                    .firstOrNull { it.task_id == task.id && it.student_id == student.id }
-        }
+            grades.selectAll().mapNotNull{grades.readResult(it)}
+        }.firstOrNull { it.task_id == task.id && it.student_id == student.id }
         if (currentGrade == null || currentGrade.value < value) {
-            val grade = Grade(value, date, student.id, student.id)
+            val grade = Grade(value, date, student.id, task.id)
             transaction {
-                Grades.insertAndGetId {
+                grades.insertAndGetId {
                     fill(it, grade)
-                }
+                }.value
+                true
             }
         } else return
     }
 
-    fun studentGrades(studentName: String) : Map<EntityID<Int>, Int>? {
+    fun studentGrades(studentName: String, task_id:Int) : Int? {
+
         val student = students.read().find { it.name == studentName } ?: return null
-        val studentsGrades = mutableMapOf<EntityID<Int>, Int>()
-        transaction {
-            Grades.select{
-                Grades.student_id eq EntityID(student.id, studentTable)
-            }.forEach { studentsGrades[it[Grades.task_id]] = it[Grades.value]  }
-        }
-        return studentsGrades.toMap()
+        return transaction {
+            grades.selectAll().mapNotNull { grades.readResult(it) }
+        }.find { it.task_id == task_id && it.student_id == student.id}?.value
+//        val result = mutableMapOf<Int, Int>()
+//        transaction {
+//            grades.selectAll().mapNotNull { grades.readResult(it) }
+//        }.forEach { grade ->
+//            if (grade.student_id == student.id) result[grade.task_id] to grade.value
+//        }
+//        return result.toMap()
     }
 
     fun getStudent(studentName: String): Student?{
@@ -69,20 +79,41 @@ class Course(
 
     fun getRankByName(studentName: String):Rank?{
         val student = students.read().find{it.name == studentName}
-        return toplist.read().find { it.student_id == student?.id && this.id == it.course_id}
+        return transaction {
+            toplist.selectAll()
+                    .mapNotNull {
+                        toplist.readResult(it)
+                    }
+        }.find { it.student_id == student?.id && this.id == it.course_id}
     }
 
-    fun getTask(taskName:String): Task? {
-        return tasks.read().find { it.name == taskName }
+    fun getTasks() : List<Task>{
+        val result = mutableListOf<Task>()
+        transaction {
+            tasks.selectAll().mapNotNull { tasks.readResult(it) }
+        }.forEach { task ->
+            if (task.course_id == this.id) result.add(task)
+        }
+        return result.toList()
     }
 
+    fun getCourseToplist() : List<Rank>{
+        val result = mutableListOf<Rank>()
+        transaction {
+            toplist.selectAll().mapNotNull { toplist.readResult(it) }
+        }.forEach { rank ->
+            if (rank.course_id == this.id) result.add(rank)
+        }
+        return result.toList()
+    }
 }
 
 class CourseTable: ItemTable<Course>(){
     val name = varchar("name",50)
-    val student = reference("students",CourseStudent)
-    val tutors = reference("tutors", CourseTutor)
-    val toplist = reference("toplist", toplistTable)
+    // Todos: change this to usable version
+//    val students = reference("students",CourseStudent)
+//    val tutors = reference("tutors", CourseTutor)
+//    val toplistRef = reference("toplist", toplist)
     override fun fill(builder: UpdateBuilder<Int>, item: Course) {
         builder[name] = item.name
 }
