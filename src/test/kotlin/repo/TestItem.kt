@@ -26,15 +26,15 @@ class TestItemTable : ItemTable<TestItem>() {
 
 val testItemTable = TestItemTable()
 
-class TestItemClass(id: EntityID<Int>) : ItemClass<TestItem>(id) {
-    companion object : IntEntityClass<TestItemClass>(testItemTable) {}
-
-    var name by testItemTable.name
-
-    override val obj: TestItem
-        get() = TestItem(name, id.value)
-
-    override fun fill(item: TestItem) {
-        name = item.name
-    }
-}
+//class TestItemClass(id: EntityID<Int>) : ItemClass<TestItem>(id) {
+//    companion object : IntEntityClass<TestItemClass>(testItemTable) {}
+//
+//    var name by testItemTable.name
+//
+//    override val obj: TestItem
+//        get() = TestItem(name, id.value)
+//
+//    override fun fill(item: TestItem) {
+//        name = item.name
+//    }
+//}

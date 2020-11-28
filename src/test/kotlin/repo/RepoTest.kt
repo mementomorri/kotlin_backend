@@ -46,29 +46,29 @@ class RepoTest {
         transaction {
             SchemaUtils.create(testItemTable)
         }
-        repoTest(RepoDSL(testItemTable))
+        repoTest(ItemRepo(testItemTable))
         transaction {
             SchemaUtils.drop(testItemTable)
         }
     }
 
-    @Test
-    fun testRepoDAO() {
-
-        Database.connect(
-            "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
-            driver = "org.h2.Driver"
-        )
-
-        transaction {
-            SchemaUtils.create(testItemTable)
-        }
-        repoTest(
-            RepoDAO(TestItemClass.Companion)
-        )
-        transaction {
-            SchemaUtils.drop(testItemTable)
-        }
-
-    }
+//    @Test
+//    fun testRepoDAO() {
+//
+//        Database.connect(
+//            "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
+//            driver = "org.h2.Driver"
+//        )
+//
+//        transaction {
+//            SchemaUtils.create(testItemTable)
+//        }
+//        repoTest(
+//            RepoDAO(TestItemClass.Companion)
+//        )
+//        transaction {
+//            SchemaUtils.drop(testItemTable)
+//        }
+//
+//    }
 }

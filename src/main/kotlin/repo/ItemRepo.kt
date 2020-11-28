@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class RepoDSL<T : Item>(
+class ItemRepo<T : Item>(
         private val table: ItemTable<T>
 ) : Repo<T> {
 

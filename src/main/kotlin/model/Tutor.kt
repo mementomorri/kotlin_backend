@@ -4,19 +4,21 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import repo.Item
 import repo.ItemTable
+import repo.PersonTable
 
 class Tutor(
-    val name: String,
+    override val name: String,
     val post: String,
     override var id: Int=-1
-) : Item {}
+) : Person {}
 
-class TutorTable : ItemTable<Tutor>() {
+class TutorTable : PersonTable<Tutor>() {
     val name = varchar("name", 255)
     val post = varchar("post", 50)
-    override fun fill(builder: UpdateBuilder<Int>, item: Tutor) {
-        builder[name] = item.name
-        builder[post] = item.post
+
+    override fun fill(builder: UpdateBuilder<Int>, person: Tutor) {
+        builder[name] = person.name
+        builder[post] = person.post
     }
     override fun readResult(result: ResultRow) =
             Tutor(

@@ -1,6 +1,6 @@
 package repo
 
-interface Repo<T: Item> {
+interface Repo<T> {
 
     fun create(element: T): Boolean // null if element was in repo
 

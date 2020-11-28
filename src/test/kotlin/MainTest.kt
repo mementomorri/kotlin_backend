@@ -1,7 +1,7 @@
 import model.*
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.test.Test
@@ -23,6 +23,26 @@ private fun addStudentByName(name: String, group: String= "Main group", id: Int=
 private fun addCourseByName( name: String, id: Int=-1){
     if (courses.read().find { it.name == name } == null){
         if (id == -1) courses.create(Course(name = name)) else courses.create(Course(name, id))
+    } else return
+}
+
+private fun putTutorToCourse(tutorName: String, courseName: String){
+    val courseId= courses.read().firstOrNull{it.name == courseName}?.id
+    val tutorId= tutors.read().firstOrNull{it.name == tutorName}?.id
+    if (courseId != null && tutorId != null) {
+        transaction {
+            courseTutorTable.insert { fill(it, CourseTutorFiller(courseId, tutorId)) }
+        }
+    } else return
+}
+
+private fun putStudentAtCourse(studentName: String, courseName: String){
+    val courseId= courses.read().firstOrNull{it.name == courseName}?.id
+    val studentId= students.read().firstOrNull{it.name == studentName}?.id
+    if (courseId != null && studentId != null) {
+        transaction {
+            courseStudentTable.insert { fill(it, CourseStudentFiller(courseId, studentId)) }
+        }
     } else return
 }
 
@@ -83,21 +103,21 @@ fun tutorSetGradeTest(){
 fun tutorSetTaskTest(){
     val math = courses.read().find { it.name=="Math" } ?: fail()
     val lecType = transaction {
-        types.selectAll().mapNotNull { types.readResult(it) }
+        typesTable.selectAll().mapNotNull { typesTable.readResult(it) }
     }.find { it.name == "Lecture" }?: fail()
     val labType=transaction {
-        types.selectAll().mapNotNull { types.readResult(it) }
+        typesTable.selectAll().mapNotNull { typesTable.readResult(it) }
     }.find { it.name == "Laboratory" }?: fail()
     transaction {
-        tasks.insertAndGetIdItem(Task("test1",lecType.id,math.id)).value
+        tasksTable.insertAndGetIdItem(Task("test1",lecType.id,math.id)).value
         true
     }
     transaction {
-        tasks.insertAndGetIdItem(Task("test2",labType.id,math.id)).value
+        tasksTable.insertAndGetIdItem(Task("test2",labType.id,math.id)).value
         true
     }
     transaction {
-        tasks.insertAndGetIdItem(Task("test3",lecType.id,math.id)).value
+        tasksTable.insertAndGetIdItem(Task("test3",lecType.id,math.id)).value
         true
     }
     assertEquals("test1", math.getTasks().find { it.name == "test1" }!!.name)
@@ -108,7 +128,9 @@ fun tutorSetTaskTest(){
 fun tutorAddStudentToCourse(){
     val math = courses.read().find { it.name=="Math" } ?: fail()
     addStudentByName("Bob","Newcomers")
+    putStudentAtCourse("Bob", "Math")
     addStudentByName("Charlie","Newcomers")
+    putStudentAtCourse("Charlie", "Math")
     assertEquals("Bob", math.getStudent("Bob")?.name)
     assertEquals("Charlie", math.getStudent("Charlie")?.name)
 }
@@ -120,6 +142,14 @@ fun adminSetCourseTest(){
     assertEquals("Rocket science", courses.read().find { it.name=="Rocket science" }?.name)
     assertEquals("Basic rocket piloting", courses.read().find { it.name=="Basic rocket piloting" }?.name)
     assertEquals("Space navigation", courses.read().find { it.name=="Space navigation" }?.name)
+}
+
+fun getStudentsByGroupTest(){
+    assertEquals(2, students.getStudentSByGroup("Footprint on the Moon")?.size)
+}
+
+fun getTutorByPostTest(){
+    assertEquals(2, tutors.getTutorsByPost("Professor")?.size)
 }
 
 class MainTest {
@@ -134,22 +164,29 @@ class MainTest {
             SchemaUtils.create(tutorTable)
         }
         transaction {
-            SchemaUtils.create(grades)
+            SchemaUtils.create(studentTable)
         }
         transaction {
-            SchemaUtils.create(tasks)
-        }
-        transaction {
-            SchemaUtils.create(toplist)
+            SchemaUtils.create(courseStudentTable)
         }
         transaction {
             SchemaUtils.create(courseTable)
         }
         transaction {
-            SchemaUtils.create(studentTable)
+            SchemaUtils.create(courseTutorTable)
         }
         transaction {
-            SchemaUtils.create(types)
+            SchemaUtils.create(tasksTable)
+        }
+        transaction {
+            SchemaUtils.create(gradesTable)
+        }
+        transaction {
+            SchemaUtils.create(toplistTable)
+        }
+
+        transaction {
+            SchemaUtils.create(typesTable)
         }
 
         mapOf(
@@ -169,36 +206,39 @@ class MainTest {
         addCourseByName("Phys")
         addCourseByName("History")
         transaction {
-            types.insertAndGetIdItem(Type("Lecture", "lec")).value
+            typesTable.insertAndGetIdItem(Type("Lecture", "lec")).value
             true
         }
         transaction {
-            types.insertAndGetIdItem(Type("Laboratory", "lab")).value
+            typesTable.insertAndGetIdItem(Type("Laboratory", "lab")).value
             true
         }
         val lecType = transaction {
-            types.selectAll().mapNotNull { types.readResult(it) }
+            typesTable.selectAll().mapNotNull { typesTable.readResult(it) }
         }.find { it.name == "Lecture" }
         val labType=transaction {
-            types.selectAll().mapNotNull { types.readResult(it) }
+            typesTable.selectAll().mapNotNull { typesTable.readResult(it) }
         }.find { it.name == "Laboratory" }
 
         val math = courses.read().find { it.name =="Math"} ?: fail("Wrong course name")
         courses.read()
                 .find {it.name == "Math"}?.run {
             addTutorByName("Sheldon")
+            putTutorToCourse("Sheldon", "Math")
             addStudentByName("Howard")
+            putStudentAtCourse("Howard", "Math")
             addStudentByName("Penny")
+            putStudentAtCourse("Penny", "Math")
             transaction {
-                tasks.insertAndGetIdItem(Task("Intro",lecType!!.id,math.id)).value
+                tasksTable.insertAndGetIdItem(Task("Intro",lecType!!.id,math.id)).value
                 true
             }
             transaction {
-                tasks.insertAndGetIdItem(Task("UML",lecType!!.id,math.id)).value
+                tasksTable.insertAndGetIdItem(Task("UML",lecType!!.id,math.id)).value
                 true
             }
             transaction {
-                tasks.insertAndGetIdItem(Task("Uml lab",labType!!.id,math.id, maxValue = 5)).value
+                tasksTable.insertAndGetIdItem(Task("Uml lab",labType!!.id,math.id, maxValue = 5)).value
                 true
             }
             setGrade("Uml lab", "Howard", 5)
@@ -215,18 +255,26 @@ class MainTest {
         tutorSetTaskTest()
         tutorAddStudentToCourse()
         adminSetCourseTest()
+        getStudentsByGroupTest()
+        getTutorByPostTest()
 
+        transaction {
+            SchemaUtils.drop(courseStudentTable)
+        }
+        transaction {
+            SchemaUtils.drop(courseTutorTable)
+        }
         transaction {
             SchemaUtils.drop(tutorTable)
         }
         transaction {
-            SchemaUtils.drop(grades)
+            SchemaUtils.drop(gradesTable)
         }
         transaction {
-            SchemaUtils.drop(tasks)
+            SchemaUtils.drop(tasksTable)
         }
         transaction {
-            SchemaUtils.drop(toplist)
+            SchemaUtils.drop(toplistTable)
         }
         transaction {
             SchemaUtils.drop(courseTable)
@@ -235,7 +283,7 @@ class MainTest {
             SchemaUtils.drop(studentTable)
         }
         transaction {
-            SchemaUtils.drop(types)
+            SchemaUtils.drop(typesTable)
         }
     }
 }

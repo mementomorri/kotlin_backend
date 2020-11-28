@@ -26,4 +26,4 @@ class TypeTable : ItemTable<Type>() {
             )
 }
 
-val types = TypeTable()
+val typesTable = TypeTable()

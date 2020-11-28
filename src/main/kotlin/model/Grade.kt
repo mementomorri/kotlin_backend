@@ -17,7 +17,7 @@ class GradesTable : IntIdTable() {
     val value = integer("value")
     val date = date("date")
     val student_id = reference("student_ID", studentTable)
-    val task_id = reference("task_ID", tasks)
+    val task_id = reference("task_ID", tasksTable)
     fun fill(builder: UpdateBuilder<Int>, grade: Grade) {
         builder[value] = grade.value
         builder[date] = grade.date
@@ -33,4 +33,4 @@ class GradesTable : IntIdTable() {
             )
 }
 
-val grades= GradesTable()
+val gradesTable= GradesTable()
