@@ -154,6 +154,7 @@ class Course(
     }
 
     fun addTutorById(tutorId: Int): Boolean{
+        if (tutors.read(tutorId) == null) return false
         return transaction {
             courseTutorTable.insert { fill(it, CourseTutorFiller(this@Course.id, tutorId)) }
             true
@@ -161,6 +162,7 @@ class Course(
     }
 
     fun addStudentById(studentId: Int): Boolean{
+        if (students.read(studentId) == null) return false
         return transaction {
             courseStudentTable.insert { fill(it, CourseStudentFiller(this@Course.id, studentId)) }
             true

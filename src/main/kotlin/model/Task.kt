@@ -1,7 +1,10 @@
 package model
 
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.internal.StringDescriptor
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.`java-time`.date
 import org.jetbrains.exposed.sql.insertAndGetId
@@ -13,6 +16,18 @@ import repo.ItemTable
 import students
 import java.time.LocalDate
 
+@Serializer(forClass = LocalDate::class)
+object DateSerializer : KSerializer<LocalDate> {
+
+    override fun serialize(output: Encoder, obj: LocalDate) {
+        output.encodeString(obj.toString())
+    }
+
+    override fun deserialize(input: Decoder): LocalDate {
+        return LocalDate.parse(input.decodeString())
+    }
+}
+
 @Serializable
 class Task(
         val name: String,
@@ -20,7 +35,7 @@ class Task(
         val course_id: Int,
         val description: String = "",
         val maxValue: Int = 1,
-        @Contextual
+        @Serializable(with=DateSerializer::class)
         val deadline: LocalDate = LocalDate.now(),
         override var id: Int=-1,
 ) : Item {

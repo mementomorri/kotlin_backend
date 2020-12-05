@@ -8,13 +8,14 @@ import org.jetbrains.exposed.sql.`java-time`.date
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.time.LocalDate
 
+
 @Serializable
 class Grade (
-    val value: Int,
-    @Contextual
-    val date: LocalDate = LocalDate.now(),
-    val student_id: Int,
-    val task_id: Int
+        val value: Int,
+        @Serializable(with=DateSerializer::class)
+        val date: LocalDate = LocalDate.now(),
+        val student_id: Int,
+        val task_id: Int
 )
 
 class GradesTable : IntIdTable() {

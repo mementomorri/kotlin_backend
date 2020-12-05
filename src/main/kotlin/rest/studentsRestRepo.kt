@@ -33,12 +33,14 @@ fun Application.studentsRestRepo(
             }
         }
         route("$path/{studentId}"){
-            get{
-                parseStudentId()?.let {id ->
-                    repo.read(id)?.let { elem ->
-                        call.respond(elem)
-                    }?: call.respond(HttpStatusCode.NotFound)
-                }?: call.respond(HttpStatusCode.BadRequest)
+            get {
+                call.respond(
+                        parseStudentId()?.let { id ->
+                            repo.read(id)?.let { elem ->
+                                elem
+                            } ?: HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
             put {
                 call.respond(
@@ -65,11 +67,13 @@ fun Application.studentsRestRepo(
         }
         route("$path/groups/{group}"){
             get {
-                parseGroup()?.let { group ->
-                    repo.read().let{ elem ->
-                        call.respond(elem.filter { it.group == group })
-                    }
-                }?: call.respond(HttpStatusCode.BadRequest)
+                call.respond(
+                        parseGroup()?.let { group ->
+                            repo.read().let { elem ->
+                                elem.filter { it.group == group }
+                            }
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
         }
     }

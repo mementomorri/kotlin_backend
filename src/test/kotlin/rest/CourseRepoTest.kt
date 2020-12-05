@@ -6,6 +6,7 @@ import courses
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.http.cio.*
 import io.ktor.serialization.*
 import io.ktor.server.testing.*
 import kotlinx.serialization.builtins.ListSerializer
@@ -14,6 +15,7 @@ import model.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.Test
 import students
@@ -108,8 +110,6 @@ class CourseRepoTest{
             handleRequest(HttpMethod.Post, "$testPath/1/tutor/1"){
                 setBodyAndHeaders(tutorsJson.first())
             }.apply {
-                println(handleRequest(HttpMethod.Get, "$testPath/1").run { parseResponse(Course.serializer())?.getTutorsAtCourse() })
-                println(response.status())
                 assertStatus(HttpStatusCode.OK)
             }
 
@@ -119,10 +119,10 @@ class CourseRepoTest{
                 assertStatus(HttpStatusCode.OK)
             }
 
-            handleRequest(HttpMethod.Post, "$testPath/1/tutor"){
+            handleRequest(HttpMethod.Post, "$testPath/1/tutor/9"){
                 setBodyAndHeaders("Wrong JSON")
             }.apply {
-                assertStatus(HttpStatusCode.BadRequest)
+                assertStatus(HttpStatusCode.NotFound)
             }
 
             val studentsJson=
@@ -135,16 +135,17 @@ class CourseRepoTest{
                                 Student(it.key, it.value)
                         )
                     }
+
             studentsJson.map {
-                handleRequest(HttpMethod.Post, "$testPath/1/student"){
+                handleRequest(HttpMethod.Post, "$testPath/1/student/${studentsJson.indexOf(it)+1}"){
                     setBodyAndHeaders(it)}.apply {
                     assertStatus(HttpStatusCode.OK)
                 }
             }
-            handleRequest(HttpMethod.Post, "$testPath/1/student"){
+            handleRequest(HttpMethod.Post, "$testPath/1/student/9"){
                 setBodyAndHeaders("Wrong JSON")
             }.apply {
-                assertStatus(HttpStatusCode.BadRequest)
+                assertStatus(HttpStatusCode.NotFound)
             }
 
             val firstTaskJson= Json.encodeToString(
@@ -205,12 +206,36 @@ class CourseRepoTest{
                 val course= parseResponse(Course.serializer())
                 assertEquals(courses?.first()?.name, course?.name)
             }
-            val tutorsAtCourse= handleRequest(HttpMethod.Get, "$testPath/${courses?.first()?.id}/tutor").run {
+            val tutorsAtCourse= handleRequest(HttpMethod.Get, "$testPath/1/tutor").run {
                 assertStatus(HttpStatusCode.OK)
-                parseResponse(ListSerializer(Course.serializer()))
+                parseResponse(ListSerializer(Tutor.serializer()))
             }
             assertEquals(2, tutorsAtCourse?.size)
-
+            val studentsAtCourse= handleRequest(HttpMethod.Get, "$testPath/1/student").run {
+                assertStatus(HttpStatusCode.OK)
+                parseResponse(ListSerializer(Student.serializer()))
+            }
+            assertEquals(3, studentsAtCourse?.size)
+            val toplist= handleRequest(HttpMethod.Get, "$testPath/1/toplist").run {
+                assertStatus(HttpStatusCode.OK)
+                parseResponse(ListSerializer(Rank.serializer()))
+            }
+            assertEquals(3, toplist?.size)
+            val tasks= handleRequest(HttpMethod.Get, "$testPath/1/task").run {
+                assertStatus(HttpStatusCode.OK)
+                parseResponse(ListSerializer(Task.serializer()))
+            }
+            assertEquals(2, tasks?.size)
+            handleRequest(HttpMethod.Get, "$testPath/1/task/${tasks?.first()?.id}").run {
+                assertStatus(HttpStatusCode.OK)
+                val task= parseResponse(Task.serializer())
+                assertEquals(tasks?.first()?.name, task?.name)
+            }
+            val grades= handleRequest(HttpMethod.Get, "$testPath/1/task/${tasks?.first()?.id}/grade").run{
+                assertStatus(HttpStatusCode.OK)
+                parseResponse(ListSerializer(Grade.serializer()))
+            }
+            assertEquals(2, grades?.size)
 
             //Put
             val math= courses?.find { it.name == "Math" }!!
@@ -229,6 +254,18 @@ class CourseRepoTest{
             //Delete
             val history= courses.find { it.name == "Hist" }!!
             handleRequest(HttpMethod.Delete, "$testPath/${history.id}").run {
+                assertStatus(HttpStatusCode.OK)
+            }
+            handleRequest(HttpMethod.Delete, "$testPath/${math.id}/tutor/${shel.id}").run {
+                assertStatus(HttpStatusCode.OK)
+            }
+            println(math.getStudentsAtCourse())
+            val penny = studentsAtCourse?.find { it.name == "Penny" }!!
+            handleRequest(HttpMethod.Delete, "$testPath/${math.id}/student/${penny.id}").run {
+                assertStatus(HttpStatusCode.OK)
+            }
+            val testTask= tasks?.find { it.name == "first task" }!!
+            handleRequest(HttpMethod.Delete, "$testPath/${math.id}/task/${testTask.id}").run {
                 assertStatus(HttpStatusCode.OK)
             }
 

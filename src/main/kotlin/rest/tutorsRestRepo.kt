@@ -35,20 +35,24 @@ fun Application.tutorsRestRepo(
         }
         route("$path/posts/{post}"){
             get {
-                parsePost()?.let { post ->
-                    repo.read().let{ elem ->
-                        call.respond(elem.filter { it.post == post })
-                    }
-                }?: call.respond(HttpStatusCode.BadRequest)
+                call.respond(
+                        parsePost()?.let { post ->
+                            repo.read().let { elem ->
+                                elem.filter { it.post == post }
+                            }
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
         }
         route("$path/{tutorId}"){
-            get{
-                parseTutorId()?.let {id ->
-                    repo.read(id)?.let { elem ->
-                        call.respond(elem)
-                    }?: call.respond(HttpStatusCode.NotFound)
-                }?: call.respond(HttpStatusCode.BadRequest)
+            get {
+                call.respond(
+                        parseTutorId()?.let { id ->
+                            repo.read(id)?.let { elem ->
+                                elem
+                            } ?: HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
             put {
                 call.respond(

@@ -39,11 +39,13 @@ fun Application.courseRestRepo(
         }
         route("$path/{courseId}") {
             get {
-                parseCourseId()?.let { id ->
-                    repo.read(id)?.let { elem ->
-                        call.respond(elem)
-                    } ?: call.respond(HttpStatusCode.NotFound)
-                } ?: call.respond(HttpStatusCode.BadRequest)
+                call.respond(
+                        parseCourseId()?.let { id ->
+                            repo.read(id)?.let { elem ->
+                                elem
+                            } ?: HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
             put {
                 call.respond(
@@ -70,150 +72,176 @@ fun Application.courseRestRepo(
         }
         route("$path/{courseId}/tutor") {
             get {
-                parseCourseId()?.let { id: Int ->
-                    repo.read(id)?.let { elem ->
-                        call.respond(elem.getTutorsAtCourse())
-                    } ?: call.respond(HttpStatusCode.NotFound)
-                } ?: call.respond(HttpStatusCode.BadRequest)
+                call.respond(
+                        parseCourseId()?.let { id: Int ->
+                            repo.read(id)?.let { elem ->
+                                elem.getTutorsAtCourse()
+                            } ?:HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
         }
         route("$path/{courseId}/tutor/{tutorId}") {
             post {
-                parseCourseId()?.let { courseid ->
-                    repo.read(courseid)?.let { elem ->
-                        parseTutorId()?.let { tutorid ->
-                            if (elem.addTutorById(tutorid))
-                                HttpStatusCode.OK
-                            else
-                                HttpStatusCode.NotFound
-                        }?: HttpStatusCode.BadRequest
-                    }?: HttpStatusCode.NotFound
-                }?: HttpStatusCode.BadRequest
+                call.respond(
+                        parseCourseId()?.let { courseid ->
+                            repo.read(courseid)?.let { elem ->
+                                parseTutorId()?.let { tutorid ->
+                                    if (elem.addTutorById(tutorid))
+                                        HttpStatusCode.OK
+                                    else
+                                        HttpStatusCode.NotFound
+                                } ?: HttpStatusCode.BadRequest
+                            } ?: HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
             delete {
-                parseCourseId()?.let { courseid ->
-                    repo.read(courseid)?.let { elem ->
-                        parseTutorId()?.let { tutorid ->
-                            if (elem.removeTutorFromCourse(tutorid))
-                                HttpStatusCode.OK
-                            else
-                                HttpStatusCode.NotFound
+                call.respond(
+                        parseCourseId()?.let { courseid ->
+                            repo.read(courseid)?.let { elem ->
+                                parseTutorId()?.let { tutorid ->
+                                    if (elem.removeTutorFromCourse(tutorid))
+                                        HttpStatusCode.OK
+                                    else
+                                        HttpStatusCode.NotFound
+                                } ?: HttpStatusCode.BadRequest
+                            } ?: HttpStatusCode.NotFound
                         } ?: HttpStatusCode.BadRequest
-                    }?: HttpStatusCode.NotFound
-                } ?: HttpStatusCode.BadRequest
+                )
             }
         }
         route("$path/{courseId}/student") {
             get {
-                parseCourseId()?.let { id ->
-                    repo.read(id)?.let { elem ->
-                        call.respond(elem.getStudentsAtCourse())
-                    } ?: call.respond(HttpStatusCode.NotFound)
-                } ?: call.respond(HttpStatusCode.BadRequest)
+                call.respond(
+                        parseCourseId()?.let { id ->
+                            repo.read(id)?.let { elem ->
+                                elem.getStudentsAtCourse()
+                            } ?: HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
         }
         route("$path/{courseId}/student/{studentId}") {
             post {
-                parseCourseId()?.let { courseid ->
-                    repo.read(courseid)?.let { elem ->
-                        parseStudentId()?.let { studentid ->
-                            if (elem.addStudentById(studentid))
-                                HttpStatusCode.OK
-                            else
-                                HttpStatusCode.NotFound
-                        }?: HttpStatusCode.BadRequest
-                    }?: HttpStatusCode.NotFound
-                }?: HttpStatusCode.NotFound
+                call.respond(
+                        parseCourseId()?.let { courseid ->
+                            repo.read(courseid)?.let { elem ->
+                                parseStudentId()?.let { studentid ->
+                                    if (elem.addStudentById(studentid))
+                                        HttpStatusCode.OK
+                                    else
+                                        HttpStatusCode.NotFound
+                                } ?: HttpStatusCode.BadRequest
+                            } ?: HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.NotFound
+                )
             }
             delete {
-                parseCourseId()?.let { courseid ->
-                    repo.read(courseid)?.let { elem ->
-                        parseStudentId()?.let { studentid ->
-                            if (elem.removeStudentFromCourse(studentid))
-                                HttpStatusCode.OK
-                            else
-                                HttpStatusCode.NotFound
+                call.respond(
+                        parseCourseId()?.let { courseid ->
+                            repo.read(courseid)?.let { elem ->
+                                parseStudentId()?.let { studentid ->
+                                    if (elem.removeStudentFromCourse(studentid))
+                                        HttpStatusCode.OK
+                                    else
+                                        HttpStatusCode.NotFound
+                                } ?: HttpStatusCode.BadRequest
+                            } ?: HttpStatusCode.NotFound
                         } ?: HttpStatusCode.BadRequest
-                    }?: HttpStatusCode.NotFound
-                } ?: HttpStatusCode.BadRequest
+                )
             }
         }
         route("$path/{courseId}/toplist") {
             get {
-                parseCourseId()?.let { id ->
-                    repo.read(id)?.let { elem ->
-                        call.respond(elem.getCourseToplist())
-                    } ?: HttpStatusCode.NotFound
-                } ?: HttpStatusCode.BadRequest
+                call.respond(
+                        parseCourseId()?.let { id ->
+                            repo.read(id)?.let { elem ->
+                                elem.getCourseToplist()
+                            } ?: HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
         }
         route("$path/{courseId}/task") {
             get {
-                parseCourseId()?.let { id ->
-                    repo.read(id)?.let { elem ->
-                        call.respond(elem.getTasks())
-                    } ?: HttpStatusCode.NotFound
-                } ?: HttpStatusCode.BadRequest
+                call.respond(
+                        parseCourseId()?.let { id ->
+                            repo.read(id)?.let { elem ->
+                                elem.getTasks()
+                            } ?: HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
             post {
-                parseCourseId()?.let { id ->
-                    repo.read(id)?.let { elem ->
-                        parseTaskBody(taskSerializer)?.let {
-                            if (elem.addTask(it))
-                                HttpStatusCode.OK
-                            else
-                                HttpStatusCode.NotFound
+                call.respond(
+                        parseCourseId()?.let { id ->
+                            repo.read(id)?.let { elem ->
+                                parseTaskBody(taskSerializer)?.let {
+                                    if (elem.addTask(it))
+                                        HttpStatusCode.OK
+                                    else
+                                        HttpStatusCode.NotFound
+                                } ?: HttpStatusCode.BadRequest
+                            } ?: HttpStatusCode.NotFound
                         } ?: HttpStatusCode.BadRequest
-                    }?: HttpStatusCode.NotFound
-                } ?: HttpStatusCode.BadRequest
+                )
             }
         }
         route("$path/{courseId}/task/{taskId}") {
             get {
-                parseCourseId()?.let { courseid ->
-                    repo.read(courseid)?.let { elem ->
-                        parseTaskId()?.let { taskid ->
-                            call.respond(elem.getTask(taskid) ?: "No such task")
-                        } ?: HttpStatusCode.NotFound
-                    } ?: HttpStatusCode.NotFound
-                } ?: HttpStatusCode.BadRequest
+                call.respond(
+                        parseCourseId()?.let { courseid ->
+                            repo.read(courseid)?.let { elem ->
+                                parseTaskId()?.let { taskid ->
+                                    elem.getTask(taskid) ?: "No such task"
+                                } ?: HttpStatusCode.NotFound
+                            } ?: HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
             delete {
-                parseCourseId()?.let { courseid ->
-                    repo.read(courseid)?.let { elem ->
-                        parseTaskId()?.let { taskid ->
-                            if (elem.removeTask(taskid))
-                                HttpStatusCode.OK
-                            else
-                                HttpStatusCode.NotFound
+                call.respond(
+                        parseCourseId()?.let { courseid ->
+                            repo.read(courseid)?.let { elem ->
+                                parseTaskId()?.let { taskid ->
+                                    if (elem.removeTask(taskid))
+                                        HttpStatusCode.OK
+                                    else
+                                        HttpStatusCode.NotFound
+                                } ?: HttpStatusCode.BadRequest
+                            } ?: HttpStatusCode.NotFound
                         } ?: HttpStatusCode.BadRequest
-                    }?: HttpStatusCode.NotFound
-                } ?: HttpStatusCode.BadRequest
+                )
             }
         }
         route("$path/{courseId}/task/{taskId}/grade"){
             get {
-                parseCourseId()?.let { courseid ->
-                    repo.read(courseid)?.let { elem ->
-                        parseTaskId()?.let { taskid ->
-                            call.respond(elem.getTask(taskid)?.getGrades()!!)
-                        } ?: HttpStatusCode.NotFound
-                    } ?: HttpStatusCode.BadRequest
-                }?:HttpStatusCode.BadRequest
+                call.respond(
+                        parseCourseId()?.let { courseid ->
+                            repo.read(courseid)?.let { elem ->
+                                parseTaskId()?.let { taskid ->
+                                    elem.getTask(taskid)?.getGrades()!!
+                                } ?: HttpStatusCode.NotFound
+                            } ?: HttpStatusCode.BadRequest
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
             post {
-                parseCourseId()?.let { courseid ->
-                    repo.read(courseid)?.let { elem ->
-                        parseTaskId()?.let { taskid ->
-                            parseGradeBody(gradeSerializer)?.let {
-                                if (elem.getTask(taskid)?.addGrade(it)!!)
-                                    HttpStatusCode.OK
-                                else
-                                    HttpStatusCode.NotFound
-                            }?: HttpStatusCode.BadRequest
-                        }?: HttpStatusCode.BadRequest
-                    }?: HttpStatusCode.NotFound
-                }?: HttpStatusCode.BadRequest
+                call.respond(
+                        parseCourseId()?.let { courseid ->
+                            repo.read(courseid)?.let { elem ->
+                                parseTaskId()?.let { taskid ->
+                                    parseGradeBody(gradeSerializer)?.let {
+                                        if (elem.getTask(taskid)?.addGrade(it)!!)
+                                            HttpStatusCode.OK
+                                        else
+                                            HttpStatusCode.NotFound
+                                    } ?: HttpStatusCode.BadRequest
+                                } ?: HttpStatusCode.BadRequest
+                            } ?: HttpStatusCode.NotFound
+                        } ?: HttpStatusCode.BadRequest
+                )
             }
         }
     }
