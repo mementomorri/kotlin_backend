@@ -6,7 +6,6 @@ import courses
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.http.cio.*
 import io.ktor.serialization.*
 import io.ktor.server.testing.*
 import kotlinx.serialization.builtins.ListSerializer
@@ -15,13 +14,11 @@ import model.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.Test
 import students
 import tutors
 import kotlin.test.assertEquals
-import kotlin.test.fail
 
 class CourseRepoTest{
     private val testPath = "/course"
@@ -35,23 +32,7 @@ class CourseRepoTest{
         transaction {
             SchemaUtils.create(tutorTable, studentTable, courseStudentTable, courseTable, courseTutorTable, tasksTable, gradesTable, toplistTable, typesTable)
         }
-
-        mapOf("Sheldon" to "Professor",
-                "Leonard" to "Professor",
-                "Ada" to "Invited lecturer"
-        ).forEach { tutors.create(Tutor(it.key, it.value)) }
-
-        mapOf("Howard" to "Footprint on the Moon",
-                "Raj" to "Footprint on the Moon",
-                "Penny" to "Waitress").forEach { students.create(Student(it.key, it.value)) }
-        mapOf("Lecture" to "Lec",
-                "Practice" to "Pract",
-                "Test" to "Test"
-        ).forEach { type ->
-            transaction {
-                typesTable.insert { fill(it, Type(type.key, type.value)) }
-            }
-        }
+        initDB()
         testRest {
             courseRestRepo(
                     courses,
@@ -90,7 +71,7 @@ class CourseRepoTest{
             courseJson.map {
                 handleRequest(HttpMethod.Post, testPath){
                     setBodyAndHeaders(it)}.apply {
-                    assertStatus(HttpStatusCode.OK)
+                    assertStatus(HttpStatusCode.Created)
                 }
             }
             handleRequest(HttpMethod.Post, testPath){
@@ -98,52 +79,23 @@ class CourseRepoTest{
             }.apply {
                 assertStatus(HttpStatusCode.BadRequest)
             }
-
-            val shel= tutors.read().firstOrNull { it.name == "Sheldon" }?: fail()
-            val leon= tutors.read().firstOrNull {it.name == "Leonard"}?: fail()
-            val tutorsJson=
-                    listOf(
-                            Json.encodeToString(Tutor.serializer(),shel),
-                            Json.encodeToString(Tutor.serializer(),leon)
-                    )
-
-            handleRequest(HttpMethod.Post, "$testPath/1/tutor/1"){
-                setBodyAndHeaders(tutorsJson.first())
-            }.apply {
-                assertStatus(HttpStatusCode.OK)
+            tutors.read().forEach {
+                handleRequest(HttpMethod.Post, "$testPath/1/tutor/${it.id}") {}.apply {
+                    assertStatus(HttpStatusCode.Created)
+                }
             }
-
-            handleRequest(HttpMethod.Post, "$testPath/1/tutor/2"){
-                setBodyAndHeaders(tutorsJson.last())
-            }.apply {
-                assertStatus(HttpStatusCode.OK)
-            }
-
             handleRequest(HttpMethod.Post, "$testPath/1/tutor/9"){
-                setBodyAndHeaders("Wrong JSON")
             }.apply {
                 assertStatus(HttpStatusCode.NotFound)
             }
 
-            val studentsJson=
-                    mapOf("Howard" to "Footprint on the Moon",
-                            "Raj" to "Footprint on the Moon",
-                            "Penny" to "Waitress"
-                    ).map {
-                        Json.encodeToString(
-                                Student.serializer(),
-                                Student(it.key, it.value)
-                        )
-                    }
-
-            studentsJson.map {
-                handleRequest(HttpMethod.Post, "$testPath/1/student/${studentsJson.indexOf(it)+1}"){
-                    setBodyAndHeaders(it)}.apply {
-                    assertStatus(HttpStatusCode.OK)
+            students.read().forEach {
+                handleRequest(HttpMethod.Post, "$testPath/1/student/${it.id}") {
+                }.apply {
+                    assertStatus(HttpStatusCode.Created)
                 }
             }
             handleRequest(HttpMethod.Post, "$testPath/1/student/9"){
-                setBodyAndHeaders("Wrong JSON")
             }.apply {
                 assertStatus(HttpStatusCode.NotFound)
             }
@@ -160,7 +112,7 @@ class CourseRepoTest{
                 handleRequest(HttpMethod.Post,"$testPath/1/task" ){
                     setBodyAndHeaders(it)
                 }.apply {
-                    assertStatus(HttpStatusCode.OK)
+                    assertStatus(HttpStatusCode.Created)
                 }
             }
             handleRequest(HttpMethod.Post,"$testPath/1/task"){
@@ -180,12 +132,12 @@ class CourseRepoTest{
             handleRequest(HttpMethod.Post, "$testPath/1/task/1/grade"){
                 setBodyAndHeaders(firstGradeJson)
             }.apply {
-                assertStatus(HttpStatusCode.OK)
+                assertStatus(HttpStatusCode.Created)
             }
             handleRequest(HttpMethod.Post, "$testPath/1/task/1/grade"){
                 setBodyAndHeaders(secondGradeJson)
             }.apply {
-                assertStatus(HttpStatusCode.OK)
+                assertStatus(HttpStatusCode.Created)
             }
             handleRequest(HttpMethod.Post, "$testPath/1/task/1/grade"){
                 setBodyAndHeaders("Wrong JSON")
@@ -210,7 +162,7 @@ class CourseRepoTest{
                 assertStatus(HttpStatusCode.OK)
                 parseResponse(ListSerializer(Tutor.serializer()))
             }
-            assertEquals(2, tutorsAtCourse?.size)
+            assertEquals(3, tutorsAtCourse?.size)
             val studentsAtCourse= handleRequest(HttpMethod.Get, "$testPath/1/student").run {
                 assertStatus(HttpStatusCode.OK)
                 parseResponse(ListSerializer(Student.serializer()))
@@ -243,7 +195,7 @@ class CourseRepoTest{
             handleRequest(HttpMethod.Put, "$testPath/${newMath.id}"){
                 setBodyAndHeaders(Json.encodeToString(Course.serializer(), newMath))
             }.run {
-                assertStatus(HttpStatusCode.OK)
+                assertStatus(HttpStatusCode.Accepted)
             }
             handleRequest(HttpMethod.Get, "$testPath/${newMath.id}").run {
                 assertStatus(HttpStatusCode.OK)
@@ -256,10 +208,9 @@ class CourseRepoTest{
             handleRequest(HttpMethod.Delete, "$testPath/${history.id}").run {
                 assertStatus(HttpStatusCode.OK)
             }
-            handleRequest(HttpMethod.Delete, "$testPath/${math.id}/tutor/${shel.id}").run {
+            handleRequest(HttpMethod.Delete, "$testPath/${math.id}/tutor/1").run {
                 assertStatus(HttpStatusCode.OK)
             }
-            println(math.getStudentsAtCourse())
             val penny = studentsAtCourse?.find { it.name == "Penny" }!!
             handleRequest(HttpMethod.Delete, "$testPath/${math.id}/student/${penny.id}").run {
                 assertStatus(HttpStatusCode.OK)
@@ -277,6 +228,28 @@ class CourseRepoTest{
 
             assert(coursesNewName.size == 2)
             assert(coursesNewName.contains("MathNew"))
+
+            assert(newMath.getTutorsAtCourse().size == 2)
+            assert(newMath.getStudentsAtCourse().size == 2)
+            assert(newMath.getTasks().size == 1)
+        }
+    }
+}
+
+private fun initDB() {
+    mapOf("Sheldon" to "Professor",
+            "Leonard" to "Professor",
+            "Ada" to "Invited lecturer").forEach { tutors.create(Tutor(it.key, it.value)) }
+
+    mapOf("Howard" to "Footprint on the Moon",
+            "Raj" to "Footprint on the Moon",
+            "Penny" to "Waitress").forEach { students.create(Student(it.key, it.value)) }
+    mapOf("Lecture" to "Lec",
+            "Practice" to "Pract",
+            "Test" to "Test"
+    ).forEach { type ->
+        transaction {
+            typesTable.insert { fill(it, Type(type.key, type.value)) }
         }
     }
 }

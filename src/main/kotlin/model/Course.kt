@@ -136,9 +136,21 @@ class Course(
             tasksTable.insertAndGetIdItem(task).value
             true
         }
-    fun removeTask(taskId: Int)=  transaction {
-            tasksTable.deleteWhere { (tasksTable.course_id eq this@Course.id) and (tasksTable.id eq taskId) } > 0
-        }
+    fun removeTask(taskId: Int): Boolean {
+        val taskExists= transaction {
+            tasksTable.selectAll().mapNotNull { tasksTable.readResult(it) }
+        }.firstOrNull {
+            it.id == taskId
+                    && it.course_id == this.id }
+        return if (taskExists != null) {
+            transaction {
+                gradesTable.deleteWhere { gradesTable.task_id eq taskId }
+            }
+            transaction {
+                tasksTable.deleteWhere { (tasksTable.course_id eq this@Course.id) and (tasksTable.id eq taskId) } > 0
+            }
+        } else false
+    }
 
 
     fun addTutorToCourse(tutorName: String): Boolean {
@@ -187,7 +199,6 @@ class Course(
             transaction {
                 courseTutorTable.deleteWhere { (courseTutorTable.course_id eq courseId) and  (courseTutorTable.tutor_id eq tutorId) } > 0
             }
-//            true
         } else false
     }
 
@@ -196,9 +207,8 @@ class Course(
         val student= students.read(studentId)?.id
         return if (student != null){
             transaction {
-                courseTutorTable.deleteWhere { (courseTutorTable.course_id eq courseId) and  (courseTutorTable.tutor_id eq studentId) } > 0
+                courseStudentTable.deleteWhere { (courseStudentTable.course_id eq courseId) and  (courseStudentTable.student_id eq studentId) } > 0
             }
-//            true
         } else false
     }
 

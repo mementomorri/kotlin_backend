@@ -574,7 +574,9 @@
             "description": "Invalid id value"
           }
         }
-      },
+      }
+    },
+    "/course/{courseId}/tutor/{tutorId}": {
       "post": {
         "tags": [
           "course"
@@ -586,6 +588,18 @@
             "name": "courseId",
             "in": "path",
             "description": "Course id to find by",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "tutorId",
+            "in": "path",
+            "description": "Tutor id to find by",
             "required": true,
             "style": "simple",
             "explode": false,
@@ -614,9 +628,7 @@
             "description": "Invalid input"
           }
         }
-      }
-    },
-    "/course/{courseId}/tutor/{tutorId}": {
+      },
       "delete": {
         "tags": [
           "course"
@@ -706,7 +718,9 @@
             "description": "Invalid id value"
           }
         }
-      },
+      }
+    },
+    "/course/{courseId}/student/{studentId}": {
       "post": {
         "tags": [
           "course"
@@ -718,6 +732,18 @@
             "name": "courseId",
             "in": "path",
             "description": "Course id to find by",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "studentId",
+            "in": "path",
+            "description": "Student id to find by",
             "required": true,
             "style": "simple",
             "explode": false,
@@ -746,9 +772,7 @@
             "description": "Invalid input"
           }
         }
-      }
-    },
-    "/course/{courseId}/student/{studentId}": {
+      },
       "delete": {
         "tags": [
           "course"

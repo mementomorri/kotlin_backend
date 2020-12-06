@@ -9,7 +9,6 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import model.Tutor
 import org.junit.Test
-import repo.StudentMap
 import repo.TutorMap
 import kotlin.test.assertEquals
 

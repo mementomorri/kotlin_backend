@@ -30,7 +30,7 @@ fun Application.courseRestRepo(
                 call.respond(
                         parseCourseBody(courseSerializer)?.let { elem ->
                             if (repo.create(elem))
-                                HttpStatusCode.OK
+                                HttpStatusCode.Created
                             else
                                 HttpStatusCode.NotFound
                         } ?: HttpStatusCode.BadRequest
@@ -52,9 +52,9 @@ fun Application.courseRestRepo(
                         parseCourseBody(courseSerializer)?.let { elem ->
                             parseCourseId()?.let { id ->
                                 if (repo.update(id, elem))
-                                    HttpStatusCode.OK
+                                    HttpStatusCode.Accepted
                                 else
-                                    HttpStatusCode.NotFound
+                                    HttpStatusCode.NotAcceptable
                             }
                         } ?: HttpStatusCode.BadRequest
                 )
@@ -88,7 +88,7 @@ fun Application.courseRestRepo(
                             repo.read(courseid)?.let { elem ->
                                 parseTutorId()?.let { tutorid ->
                                     if (elem.addTutorById(tutorid))
-                                        HttpStatusCode.OK
+                                        HttpStatusCode.Created
                                     else
                                         HttpStatusCode.NotFound
                                 } ?: HttpStatusCode.BadRequest
@@ -129,7 +129,7 @@ fun Application.courseRestRepo(
                             repo.read(courseid)?.let { elem ->
                                 parseStudentId()?.let { studentid ->
                                     if (elem.addStudentById(studentid))
-                                        HttpStatusCode.OK
+                                        HttpStatusCode.Created
                                     else
                                         HttpStatusCode.NotFound
                                 } ?: HttpStatusCode.BadRequest
@@ -179,7 +179,7 @@ fun Application.courseRestRepo(
                             repo.read(id)?.let { elem ->
                                 parseTaskBody(taskSerializer)?.let {
                                     if (elem.addTask(it))
-                                        HttpStatusCode.OK
+                                        HttpStatusCode.Created
                                     else
                                         HttpStatusCode.NotFound
                                 } ?: HttpStatusCode.BadRequest
@@ -234,7 +234,7 @@ fun Application.courseRestRepo(
                                 parseTaskId()?.let { taskid ->
                                     parseGradeBody(gradeSerializer)?.let {
                                         if (elem.getTask(taskid)?.addGrade(it)!!)
-                                            HttpStatusCode.OK
+                                            HttpStatusCode.Created
                                         else
                                             HttpStatusCode.NotFound
                                     } ?: HttpStatusCode.BadRequest

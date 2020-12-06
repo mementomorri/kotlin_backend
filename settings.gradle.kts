@@ -1,2 +1,2 @@
-rootProject.name = "restAndORM"
+rootProject.name = "StudentsToplistRestServer"
 

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class rest.CourseRepoTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class rest.CourseRepoTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/rest.html">rest</a> &gt; CourseRepoTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">1</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">1.305s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">courseRepoMapTest</td>
+<td class="success">1.305s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>17:58:49.493 [Test worker] DEBUG Exposed - SELECT VALUE FROM INFORMATION_SCHEMA.SETTINGS WHERE NAME = 'MODE'
+17:58:49.513 [Test worker] DEBUG Exposed - CREATE TABLE IF NOT EXISTS TUTOR (ID INT AUTO_INCREMENT PRIMARY KEY, &quot;NAME&quot; VARCHAR(255) NOT NULL, POST VARCHAR(50) NOT NULL)
+17:58:49.513 [Test worker] DEBUG Exposed - CREATE TABLE IF NOT EXISTS STUDENT (ID INT AUTO_INCREMENT PRIMARY KEY, &quot;NAME&quot; VARCHAR(255) NOT NULL, GOROUP VARCHAR(70) NOT NULL)
+17:58:49.513 [Test worker] DEBUG Exposed - CREATE TABLE IF NOT EXISTS COURSE (ID INT AUTO_INCREMENT PRIMARY KEY, &quot;NAME&quot; VARCHAR(50) NOT NULL)
+17:58:49.522 [Test worker] DEBUG Exposed - CREATE TABLE IF NOT EXISTS COURSESTUDENT (ID INT AUTO_INCREMENT PRIMARY KEY, COURSE_ID INT NOT NULL, STUDENT_ID INT NOT NULL, CONSTRAINT FK_COURSESTUDENT_COURSE_ID_ID FOREIGN KEY (COURSE_ID) REFERENCES COURSE(ID) ON DELETE RESTRICT ON UPDATE RESTRICT, CONSTRAINT FK_COURSESTUDENT_STUDENT_ID_ID FOREIGN KEY (STUDENT_ID) REFERENCES STUDENT(ID) ON DELETE RESTRICT ON UPDATE RESTRICT)
+17:58:49.532 [Test worker] DEBUG Exposed - CREATE TABLE IF NOT EXISTS COURSETUTOR (ID INT AUTO_INCREMENT PRIMARY KEY, COURSE_ID INT NOT NULL, TUTOR_ID INT NOT NULL, CONSTRAINT FK_COURSETUTOR_COURSE_ID_ID FOREIGN KEY (COURSE_ID) REFERENCES COURSE(ID) ON DELETE RESTRICT ON UPDATE RESTRICT, CONSTRAINT FK_COURSETUTOR_TUTOR_ID_ID FOREIGN KEY (TUTOR_ID) REFERENCES TUTOR(ID) ON DELETE RESTRICT ON UPDATE RESTRICT)
+17:58:49.533 [Test worker] DEBUG Exposed - CREATE TABLE IF NOT EXISTS &quot;TYPE&quot; (ID INT AUTO_INCREMENT PRIMARY KEY, &quot;NAME&quot; VARCHAR(50) NOT NULL, &quot;shortName&quot; VARCHAR(20) NOT NULL)
+17:58:49.533 [Test worker] DEBUG Exposed - CREATE TABLE IF NOT EXISTS TASK (ID INT AUTO_INCREMENT PRIMARY KEY, &quot;NAME&quot; VARCHAR(255) NOT NULL, &quot;type_ID&quot; INT NOT NULL, COURSE_ID INT NOT NULL, DESCRIPTION VARCHAR(255) NOT NULL, &quot;maxValue&quot; INT NOT NULL, DEADLINE DATE NOT NULL, CONSTRAINT FK_TASK_TYPE_ID_ID FOREIGN KEY (&quot;type_ID&quot;) REFERENCES &quot;TYPE&quot;(ID) ON DELETE RESTRICT ON UPDATE RESTRICT, CONSTRAINT FK_TASK_COURSE_ID_ID FOREIGN KEY (COURSE_ID) REFERENCES COURSE(ID) ON DELETE RESTRICT ON UPDATE RESTRICT)
+17:58:49.533 [Test worker] DEBUG Exposed - CREATE TABLE IF NOT EXISTS GRADES (ID INT AUTO_INCREMENT PRIMARY KEY, &quot;VALUE&quot; INT NOT NULL, &quot;DATE&quot; DATE NOT NULL, &quot;student_ID&quot; INT NOT NULL, &quot;task_ID&quot; INT NOT NULL, CONSTRAINT FK_GRADES_STUDENT_ID_ID FOREIGN KEY (&quot;student_ID&quot;) REFERENCES STUDENT(ID) ON DELETE RESTRICT ON UPDATE RESTRICT, CONSTRAINT FK_GRADES_TASK_ID_ID FOREIGN KEY (&quot;task_ID&quot;) REFERENCES TASK(ID) ON DELETE RESTRICT ON UPDATE RESTRICT)
+17:58:49.543 [Test worker] DEBUG Exposed - CREATE TABLE IF NOT EXISTS TOPLIST (ID INT AUTO_INCREMENT PRIMARY KEY, STUDENT_ID INT NOT NULL, COURSE_ID INT NOT NULL, &quot;RANK&quot; DOUBLE PRECISION NOT NULL, CONSTRAINT FK_TOPLIST_STUDENT_ID_ID FOREIGN KEY (STUDENT_ID) REFERENCES STUDENT(ID) ON DELETE RESTRICT ON UPDATE RESTRICT, CONSTRAINT FK_TOPLIST_COURSE_ID_ID FOREIGN KEY (COURSE_ID) REFERENCES COURSE(ID) ON DELETE RESTRICT ON UPDATE RESTRICT)
+17:58:49.556 [Test worker] DEBUG Exposed - INSERT INTO TUTOR (&quot;NAME&quot;, POST) VALUES ('Sheldon', 'Professor')
+17:58:49.556 [Test worker] DEBUG Exposed - INSERT INTO TUTOR (&quot;NAME&quot;, POST) VALUES ('Leonard', 'Professor')
+17:58:49.562 [Test worker] DEBUG Exposed - INSERT INTO TUTOR (&quot;NAME&quot;, POST) VALUES ('Ada', 'Invited lecturer')
+17:58:49.566 [Test worker] DEBUG Exposed - INSERT INTO STUDENT (GOROUP, &quot;NAME&quot;) VALUES ('Footprint on the Moon', 'Howard')
+17:58:49.567 [Test worker] DEBUG Exposed - INSERT INTO STUDENT (GOROUP, &quot;NAME&quot;) VALUES ('Footprint on the Moon', 'Raj')
+17:58:49.567 [Test worker] DEBUG Exposed - INSERT INTO STUDENT (GOROUP, &quot;NAME&quot;) VALUES ('Waitress', 'Penny')
+17:58:49.572 [Test worker] DEBUG Exposed - INSERT INTO &quot;TYPE&quot; (&quot;NAME&quot;, &quot;shortName&quot;) VALUES ('Lecture', 'Lec')
+17:58:49.573 [Test worker] DEBUG Exposed - INSERT INTO &quot;TYPE&quot; (&quot;NAME&quot;, &quot;shortName&quot;) VALUES ('Practice', 'Pract')
+17:58:49.573 [Test worker] DEBUG Exposed - INSERT INTO &quot;TYPE&quot; (&quot;NAME&quot;, &quot;shortName&quot;) VALUES ('Test', 'Test')
+17:58:49.623 [Test worker] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active
+17:58:49.757 [DefaultDispatcher-worker-1 @request#1] DEBUG Exposed - INSERT INTO COURSE (&quot;NAME&quot;) VALUES ('Math')
+17:58:49.773 [DefaultDispatcher-worker-1 @request#3] DEBUG Exposed - INSERT INTO COURSE (&quot;NAME&quot;) VALUES ('Phys')
+17:58:49.782 [DefaultDispatcher-worker-1 @request#5] DEBUG Exposed - INSERT INTO COURSE (&quot;NAME&quot;) VALUES ('Hist')
+17:58:49.782 [Test worker] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR
+17:58:49.802 [DefaultDispatcher-worker-1 @request#9] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.803 [DefaultDispatcher-worker-1 @request#9] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR WHERE TUTOR.ID = 1
+17:58:49.803 [DefaultDispatcher-worker-1 @request#9] DEBUG Exposed - INSERT INTO COURSETUTOR (COURSE_ID, TUTOR_ID) VALUES (1, 1)
+17:58:49.812 [DefaultDispatcher-worker-1 @request#11] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.814 [DefaultDispatcher-worker-1 @request#11] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR WHERE TUTOR.ID = 2
+17:58:49.815 [DefaultDispatcher-worker-1 @request#11] DEBUG Exposed - INSERT INTO COURSETUTOR (COURSE_ID, TUTOR_ID) VALUES (1, 2)
+17:58:49.818 [DefaultDispatcher-worker-1 @request#13] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.818 [DefaultDispatcher-worker-1 @request#13] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR WHERE TUTOR.ID = 3
+17:58:49.822 [DefaultDispatcher-worker-1 @request#13] DEBUG Exposed - INSERT INTO COURSETUTOR (COURSE_ID, TUTOR_ID) VALUES (1, 3)
+17:58:49.824 [DefaultDispatcher-worker-1 @request#15] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.824 [DefaultDispatcher-worker-1 @request#15] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR WHERE TUTOR.ID = 9
+17:58:49.824 [Test worker] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT
+17:58:49.833 [DefaultDispatcher-worker-1 @request#17] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.833 [DefaultDispatcher-worker-1 @request#17] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 1
+17:58:49.833 [DefaultDispatcher-worker-1 @request#17] DEBUG Exposed - INSERT INTO COURSESTUDENT (COURSE_ID, STUDENT_ID) VALUES (1, 1)
+17:58:49.843 [DefaultDispatcher-worker-1 @request#19] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.843 [DefaultDispatcher-worker-1 @request#19] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 2
+17:58:49.843 [DefaultDispatcher-worker-1 @request#19] DEBUG Exposed - INSERT INTO COURSESTUDENT (COURSE_ID, STUDENT_ID) VALUES (1, 2)
+17:58:49.843 [DefaultDispatcher-worker-1 @request#21] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.843 [DefaultDispatcher-worker-1 @request#21] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 3
+17:58:49.843 [DefaultDispatcher-worker-1 @request#21] DEBUG Exposed - INSERT INTO COURSESTUDENT (COURSE_ID, STUDENT_ID) VALUES (1, 3)
+17:58:49.853 [DefaultDispatcher-worker-1 @request#23] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.856 [DefaultDispatcher-worker-1 @request#23] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 9
+17:58:49.863 [DefaultDispatcher-worker-1 @request#25] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.877 [DefaultDispatcher-worker-1 @request#25] DEBUG Exposed - INSERT INTO TASK (COURSE_ID, DEADLINE, DESCRIPTION, &quot;maxValue&quot;, &quot;NAME&quot;, &quot;type_ID&quot;) VALUES (1, '2020-12-06', '', 5, 'first task', 1)
+17:58:49.877 [DefaultDispatcher-worker-1 @request#27] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.882 [DefaultDispatcher-worker-1 @request#27] DEBUG Exposed - INSERT INTO TASK (COURSE_ID, DEADLINE, DESCRIPTION, &quot;maxValue&quot;, &quot;NAME&quot;, &quot;type_ID&quot;) VALUES (1, '2020-12-06', '', 5, 'second task', 1)
+17:58:49.884 [DefaultDispatcher-worker-1 @request#29] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.884 [DefaultDispatcher-worker-1 @request#31] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.884 [DefaultDispatcher-worker-1 @request#31] DEBUG Exposed - SELECT TASK.ID, TASK.&quot;NAME&quot;, TASK.&quot;type_ID&quot;, TASK.COURSE_ID, TASK.DESCRIPTION, TASK.&quot;maxValue&quot;, TASK.DEADLINE FROM TASK
+17:58:49.893 [DefaultDispatcher-worker-1 @request#31] DEBUG Exposed - INSERT INTO GRADES (&quot;DATE&quot;, &quot;student_ID&quot;, &quot;task_ID&quot;, &quot;VALUE&quot;) VALUES ('2020-12-06', 1, 1, 5)
+17:58:49.893 [DefaultDispatcher-worker-1 @request#33] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.893 [DefaultDispatcher-worker-1 @request#33] DEBUG Exposed - SELECT TASK.ID, TASK.&quot;NAME&quot;, TASK.&quot;type_ID&quot;, TASK.COURSE_ID, TASK.DESCRIPTION, TASK.&quot;maxValue&quot;, TASK.DEADLINE FROM TASK
+17:58:49.901 [DefaultDispatcher-worker-1 @request#33] DEBUG Exposed - INSERT INTO GRADES (&quot;DATE&quot;, &quot;student_ID&quot;, &quot;task_ID&quot;, &quot;VALUE&quot;) VALUES ('2020-12-06', 2, 1, 3)
+17:58:49.902 [DefaultDispatcher-worker-1 @request#35] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.906 [DefaultDispatcher-worker-1 @request#37] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE
+17:58:49.931 [DefaultDispatcher-worker-3 @request#41] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.934 [DefaultDispatcher-worker-4 @request#45] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.936 [DefaultDispatcher-worker-4 @request#45] DEBUG Exposed - SELECT COURSETUTOR.ID, COURSETUTOR.COURSE_ID, COURSETUTOR.TUTOR_ID FROM COURSETUTOR
+17:58:49.938 [DefaultDispatcher-worker-4 @request#45] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR WHERE TUTOR.ID = 1
+17:58:49.939 [DefaultDispatcher-worker-4 @request#45] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR WHERE TUTOR.ID = 2
+17:58:49.941 [DefaultDispatcher-worker-4 @request#45] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR WHERE TUTOR.ID = 3
+17:58:49.946 [DefaultDispatcher-worker-1 @request#49] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.949 [DefaultDispatcher-worker-1 @request#49] DEBUG Exposed - SELECT COURSESTUDENT.ID, COURSESTUDENT.COURSE_ID, COURSESTUDENT.STUDENT_ID FROM COURSESTUDENT
+17:58:49.951 [DefaultDispatcher-worker-1 @request#49] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 1
+17:58:49.952 [DefaultDispatcher-worker-1 @request#49] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 2
+17:58:49.954 [DefaultDispatcher-worker-1 @request#49] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 3
+17:58:49.962 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.963 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT TOPLIST.ID, TOPLIST.STUDENT_ID, TOPLIST.COURSE_ID, TOPLIST.&quot;RANK&quot; FROM TOPLIST
+17:58:49.963 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSESTUDENT.ID, COURSESTUDENT.COURSE_ID, COURSESTUDENT.STUDENT_ID FROM COURSESTUDENT
+17:58:49.963 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 1
+17:58:49.963 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 2
+17:58:49.972 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 3
+17:58:49.977 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.977 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 1
+17:58:49.982 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT TOPLIST.ID, TOPLIST.STUDENT_ID, TOPLIST.COURSE_ID, TOPLIST.&quot;RANK&quot; FROM TOPLIST
+17:58:49.984 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT TASK.ID, TASK.&quot;NAME&quot;, TASK.&quot;type_ID&quot;, TASK.COURSE_ID, TASK.DESCRIPTION, TASK.&quot;maxValue&quot;, TASK.DEADLINE FROM TASK
+17:58:49.984 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT GRADES.ID, GRADES.&quot;VALUE&quot;, GRADES.&quot;DATE&quot;, GRADES.&quot;student_ID&quot;, GRADES.&quot;task_ID&quot; FROM GRADES WHERE GRADES.&quot;student_ID&quot; = 1
+17:58:49.984 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT &quot;TYPE&quot;.ID, &quot;TYPE&quot;.&quot;NAME&quot;, &quot;TYPE&quot;.&quot;shortName&quot; FROM &quot;TYPE&quot; WHERE &quot;TYPE&quot;.ID = 1
+17:58:49.984 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - INSERT INTO TOPLIST (COURSE_ID, &quot;RANK&quot;, STUDENT_ID) VALUES (1, 0.1, 1)
+17:58:49.993 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.993 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 2
+17:58:49.993 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT TOPLIST.ID, TOPLIST.STUDENT_ID, TOPLIST.COURSE_ID, TOPLIST.&quot;RANK&quot; FROM TOPLIST
+17:58:49.993 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:49.993 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 1
+17:58:49.993 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT TASK.ID, TASK.&quot;NAME&quot;, TASK.&quot;type_ID&quot;, TASK.COURSE_ID, TASK.DESCRIPTION, TASK.&quot;maxValue&quot;, TASK.DEADLINE FROM TASK
+17:58:50.001 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT GRADES.ID, GRADES.&quot;VALUE&quot;, GRADES.&quot;DATE&quot;, GRADES.&quot;student_ID&quot;, GRADES.&quot;task_ID&quot; FROM GRADES WHERE GRADES.&quot;student_ID&quot; = 2
+17:58:50.002 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT &quot;TYPE&quot;.ID, &quot;TYPE&quot;.&quot;NAME&quot;, &quot;TYPE&quot;.&quot;shortName&quot; FROM &quot;TYPE&quot; WHERE &quot;TYPE&quot;.ID = 1
+17:58:50.002 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - INSERT INTO TOPLIST (COURSE_ID, &quot;RANK&quot;, STUDENT_ID) VALUES (1, 0.0, 2)
+17:58:50.002 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.002 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 3
+17:58:50.006 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT TOPLIST.ID, TOPLIST.STUDENT_ID, TOPLIST.COURSE_ID, TOPLIST.&quot;RANK&quot; FROM TOPLIST
+17:58:50.006 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.006 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 1
+17:58:50.013 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.013 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 2
+17:58:50.016 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT TASK.ID, TASK.&quot;NAME&quot;, TASK.&quot;type_ID&quot;, TASK.COURSE_ID, TASK.DESCRIPTION, TASK.&quot;maxValue&quot;, TASK.DEADLINE FROM TASK
+17:58:50.018 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT GRADES.ID, GRADES.&quot;VALUE&quot;, GRADES.&quot;DATE&quot;, GRADES.&quot;student_ID&quot;, GRADES.&quot;task_ID&quot; FROM GRADES WHERE GRADES.&quot;student_ID&quot; = 3
+17:58:50.019 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - INSERT INTO TOPLIST (COURSE_ID, &quot;RANK&quot;, STUDENT_ID) VALUES (1, 0.0, 3)
+17:58:50.021 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT TOPLIST.ID, TOPLIST.STUDENT_ID, TOPLIST.COURSE_ID, TOPLIST.&quot;RANK&quot; FROM TOPLIST
+17:58:50.022 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.023 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 1
+17:58:50.023 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.024 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 2
+17:58:50.024 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.025 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 3
+17:58:50.029 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.031 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 1
+17:58:50.032 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.033 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 2
+17:58:50.034 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.035 [DefaultDispatcher-worker-2 @request#53] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 3
+17:58:50.040 [DefaultDispatcher-worker-2 @request#57] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.042 [DefaultDispatcher-worker-2 @request#57] DEBUG Exposed - SELECT TASK.ID, TASK.&quot;NAME&quot;, TASK.&quot;type_ID&quot;, TASK.COURSE_ID, TASK.DESCRIPTION, TASK.&quot;maxValue&quot;, TASK.DEADLINE FROM TASK
+17:58:50.054 [DefaultDispatcher-worker-2 @request#61] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.056 [DefaultDispatcher-worker-2 @request#61] DEBUG Exposed - SELECT TASK.ID, TASK.&quot;NAME&quot;, TASK.&quot;type_ID&quot;, TASK.COURSE_ID, TASK.DESCRIPTION, TASK.&quot;maxValue&quot;, TASK.DEADLINE FROM TASK
+17:58:50.062 [DefaultDispatcher-worker-2 @request#65] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.062 [DefaultDispatcher-worker-2 @request#65] DEBUG Exposed - SELECT TASK.ID, TASK.&quot;NAME&quot;, TASK.&quot;type_ID&quot;, TASK.COURSE_ID, TASK.DESCRIPTION, TASK.&quot;maxValue&quot;, TASK.DEADLINE FROM TASK
+17:58:50.062 [DefaultDispatcher-worker-2 @request#65] DEBUG Exposed - SELECT GRADES.ID, GRADES.&quot;VALUE&quot;, GRADES.&quot;DATE&quot;, GRADES.&quot;student_ID&quot;, GRADES.&quot;task_ID&quot; FROM GRADES
+17:58:50.073 [DefaultDispatcher-worker-2 @request#69] DEBUG Exposed - UPDATE COURSE SET &quot;NAME&quot;='MathNew' WHERE COURSE.ID = 1
+17:58:50.083 [DefaultDispatcher-worker-2 @request#71] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.092 [DefaultDispatcher-worker-2 @request#75] DEBUG Exposed - DELETE FROM COURSE WHERE COURSE.ID = 3
+17:58:50.093 [DefaultDispatcher-worker-2 @request#77] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.093 [DefaultDispatcher-worker-2 @request#77] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR WHERE TUTOR.ID = 1
+17:58:50.102 [DefaultDispatcher-worker-2 @request#77] DEBUG Exposed - DELETE FROM COURSETUTOR WHERE (COURSETUTOR.COURSE_ID = 1) AND (COURSETUTOR.TUTOR_ID = 1)
+17:58:50.102 [DefaultDispatcher-worker-2 @request#79] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.102 [DefaultDispatcher-worker-2 @request#79] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 3
+17:58:50.107 [DefaultDispatcher-worker-2 @request#79] DEBUG Exposed - DELETE FROM COURSESTUDENT WHERE (COURSESTUDENT.COURSE_ID = 1) AND (COURSESTUDENT.STUDENT_ID = 3)
+17:58:50.107 [DefaultDispatcher-worker-2 @request#81] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE WHERE COURSE.ID = 1
+17:58:50.115 [DefaultDispatcher-worker-2 @request#81] DEBUG Exposed - SELECT TASK.ID, TASK.&quot;NAME&quot;, TASK.&quot;type_ID&quot;, TASK.COURSE_ID, TASK.DESCRIPTION, TASK.&quot;maxValue&quot;, TASK.DEADLINE FROM TASK
+17:58:50.121 [DefaultDispatcher-worker-2 @request#81] DEBUG Exposed - DELETE FROM GRADES WHERE GRADES.&quot;task_ID&quot; = 1
+17:58:50.123 [DefaultDispatcher-worker-2 @request#81] DEBUG Exposed - DELETE FROM TASK WHERE (TASK.COURSE_ID = 1) AND (TASK.ID = 1)
+17:58:50.123 [DefaultDispatcher-worker-2 @request#83] DEBUG Exposed - SELECT COURSE.ID, COURSE.&quot;NAME&quot; FROM COURSE
+17:58:50.132 [Test worker] DEBUG Exposed - SELECT COURSETUTOR.ID, COURSETUTOR.COURSE_ID, COURSETUTOR.TUTOR_ID FROM COURSETUTOR
+17:58:50.132 [Test worker] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR WHERE TUTOR.ID = 2
+17:58:50.132 [Test worker] DEBUG Exposed - SELECT TUTOR.ID, TUTOR.&quot;NAME&quot;, TUTOR.POST FROM TUTOR WHERE TUTOR.ID = 3
+17:58:50.132 [Test worker] DEBUG Exposed - SELECT COURSESTUDENT.ID, COURSESTUDENT.COURSE_ID, COURSESTUDENT.STUDENT_ID FROM COURSESTUDENT
+17:58:50.132 [Test worker] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 1
+17:58:50.132 [Test worker] DEBUG Exposed - SELECT STUDENT.ID, STUDENT.&quot;NAME&quot;, STUDENT.GOROUP FROM STUDENT WHERE STUDENT.ID = 2
+17:58:50.132 [Test worker] DEBUG Exposed - SELECT TASK.ID, TASK.&quot;NAME&quot;, TASK.&quot;type_ID&quot;, TASK.COURSE_ID, TASK.DESCRIPTION, TASK.&quot;maxValue&quot;, TASK.DEADLINE FROM TASK
+17:58:50.143 [Test worker] DEBUG Exposed - DROP TABLE IF EXISTS TOPLIST
+17:58:50.143 [Test worker] DEBUG Exposed - DROP TABLE IF EXISTS GRADES
+17:58:50.143 [Test worker] DEBUG Exposed - DROP TABLE IF EXISTS TASK
+17:58:50.143 [Test worker] DEBUG Exposed - DROP TABLE IF EXISTS &quot;TYPE&quot;
+17:58:50.143 [Test worker] DEBUG Exposed - DROP TABLE IF EXISTS COURSETUTOR
+17:58:50.143 [Test worker] DEBUG Exposed - DROP TABLE IF EXISTS TUTOR
+17:58:50.143 [Test worker] DEBUG Exposed - DROP TABLE IF EXISTS COURSESTUDENT
+17:58:50.143 [Test worker] DEBUG Exposed - DROP TABLE IF EXISTS STUDENT
+17:58:50.143 [Test worker] DEBUG Exposed - DROP TABLE IF EXISTS COURSE
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 6.5</a> at Dec 6, 2020, 5:58:50 PM</p>
+</div>
+</div>
+</body>
+</html>

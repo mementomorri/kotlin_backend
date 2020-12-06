@@ -4,8 +4,8 @@ plugins {
     kotlin("plugin.serialization") version kotlinVersion
 }
 
-group = "ru.altmanea.examples"
-version = "0.1"
+group = "me.mementomorri"
+version = "1.0"
 
 repositories {
     mavenCentral()
