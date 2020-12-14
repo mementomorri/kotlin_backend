@@ -4,5 +4,4 @@ This branch contains information about DB of the educational project, source cod
 
 ![](https://github.com/mementomorri/Kotlin-Backend/blob/ORM/diagram/er-diagram.png)
 
-At this level of project implementation there is just DB tables, classes and repositories. Here tests run usecases scenarios and check if everything is fine
-
+At this level of project implementation there is just DB tables, classes and repositories. Here tests run usecase scenarios and check if everything is fine.
